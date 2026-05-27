@@ -1,0 +1,25 @@
+# ==========================================
+# Gitignore - Workspace Raíz del Proyecto IPM
+# ==========================================
+
+# Ignorar la carpeta de datos masivos DANE en la raíz (contiene archivos .dta y .sav pesados)
+/datos/
+
+# Ignorar configuraciones del entorno local y habilidades personalizadas
+/.vscode/
+/skill.sh/
+
+# Ignorar archivos del sistema operativo
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+
+# ==========================================
+# Reglas heredadas para proyecto_ipm (Opcional - Evitar archivos generados pesados)
+# Si deseas ignorar los datasets locales de la carpeta de trabajo, descomenta las siguientes líneas:
+# /proyecto_ipm/datos/raw/*.csv
+# /proyecto_ipm/datos/procesados/*.rds
+# /proyecto_ipm/informe_ipm_portafolio.html
+# /proyecto_ipm/articulo_pobreza_multidimensional.docx
