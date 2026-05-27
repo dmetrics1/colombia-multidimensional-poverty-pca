@@ -17,7 +17,6 @@ El proyecto está organizado de forma modular, separando el código fuente, la d
     *   **`resultados/`**: Gráficos analíticos generados (PNG) y tablas consolidadas de salida (Excel).
     *   **`diccionario/`**: Diccionario oficial de variables DANE y su versión estructurada en Markdown.
     *   **`metodologia/`**: Guías oficiales de construcción del IPM.
-    *   **`articulo_replicar/`**: Copia del artículo base de referencia.
     *   **`reportes_dane/`**: Boletines de prensa oficiales del DANE para validación de resultados.
     *   **`main.R`**: Orquestador y punto de entrada para ejecutar todo el pipeline.
 *   **`datos/`** *(Excluido de Git)*: Microdatos masivos originales de la Gran Encuesta Integrada de Hogares (GEIH) del DANE en formatos SPSS (`.sav`) y Stata (`.dta`).

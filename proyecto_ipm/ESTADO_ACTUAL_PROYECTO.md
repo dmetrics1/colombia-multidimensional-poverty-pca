@@ -11,7 +11,6 @@ La documentacion principal fue revisada frente a la estructura real del proyecto
 ## Carpetas vigentes
 
 ```text
-articulo_replicar/  articulo base y PDF de referencia
 datos/raw/          CSV del DANE usados por el pipeline
 datos/procesados/   bases .rds ya cruzadas y dataset del articulo
 diccionario/        diccionario oficial DANE y version limpia

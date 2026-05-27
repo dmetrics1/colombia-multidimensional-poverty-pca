@@ -25,10 +25,6 @@ Actualizado: 26 de mayo de 2026.
 ```text
 proyecto_ipm/
 |
-|-- articulo_replicar/
-|   |-- articulo_replicar.md
-|   `-- Dialnet-PerspectivaMultidimensionalDeLaPobrezaEnLosHogares-8752287.pdf
-|
 |-- datos/
 |   |-- raw/                  # CSV usados por el pipeline
 |   `-- procesados/           # Bases .rds generadas por los scripts
