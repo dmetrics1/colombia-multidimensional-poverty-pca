@@ -1,0 +1,1626 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pobreza Multidimensional en Colombia — Daniel Molina</title>
+  <meta name="description" content="Análisis regional del IPM en Colombia con microdatos DANE 2025. Visualizaciones interactivas, PCA y correlaciones multivariadas.">
+  <meta name="author" content="Daniel José Molina Barrios">
+  
+  <!-- Kit de Favicons Oficiales de la Marca -->
+  <link rel="icon" type="image/x-icon" href="assets/brand/06-favicon/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/brand/06-favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/brand/06-favicon/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/brand/06-favicon/apple-touch-icon.png">
+  
+  <!-- Google Fonts: Outfit para encabezados e Inter para cuerpo de texto -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      /* Daniel Molina Brand Colors */
+      --dm-violet: #7C3AED;
+      --dm-blue: #2563EB;
+      --dm-cyan: #06B6D4;
+      --dm-green: #10B981;
+      --dm-gradient: linear-gradient(135deg, #7C3AED 0%, #2563EB 50%, #06B6D4 100%);
+      --dm-gradient-hover: linear-gradient(135deg, #8B5CF6 0%, #3B82F6 50%, #22D3EE 100%);
+      
+      /* Light Mode Palette (Coherente con los fondos claros del Brand Book) */
+      --bg-color: #F7F7F8;
+      --card-bg: #FFFFFF;
+      --text-primary: #111827;
+      --text-secondary: #4B5563;
+      --border-color: #E5E7EB;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+      --glass-bg: rgba(255, 255, 255, 0.85);
+      --glass-border: rgba(255, 255, 255, 0.6);
+      --sidebar-bg: #FFFFFF;
+      --hero-bg: radial-gradient(circle at 92% 10%, rgba(6, 182, 212, 0.04), transparent 30%),
+                 radial-gradient(circle at 5% 15%, rgba(124, 58, 237, 0.04), transparent 35%),
+                 #FFFFFF;
+      --callout-bg: rgba(37, 99, 235, 0.03);
+      --callout-border: #2563EB;
+      --accent-soft: rgba(37, 99, 235, 0.04);
+      --accent-soft-cyan: rgba(6, 182, 212, 0.04);
+      
+      --toc-active-bg: rgba(37, 99, 235, 0.06);
+      --toc-active-text: #2563EB;
+    }
+
+    [data-theme="dark"] {
+      /* Dark Mode Palette (Fiel al Dashboard Premium del Brand Book) */
+      --bg-color: #090D1A;
+      --card-bg: #111827; /* Slate Oscuro exacto de la marca */
+      --text-primary: #F3F4F6;
+      --text-secondary: #9CA3AF;
+      --border-color: #1E293B;
+      --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+      --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+      --glass-bg: rgba(17, 24, 39, 0.85);
+      --glass-border: rgba(255, 255, 255, 0.05);
+      --sidebar-bg: #0C111F;
+      --hero-bg: radial-gradient(circle at 92% 10%, rgba(6, 182, 212, 0.12), transparent 35%),
+                 radial-gradient(circle at 5% 15%, rgba(124, 58, 237, 0.12), transparent 40%),
+                 #111827;
+      --callout-bg: #1E293B;
+      --callout-border: #7C3AED;
+      --accent-soft: rgba(124, 58, 237, 0.15);
+      --accent-soft-cyan: rgba(6, 182, 212, 0.15);
+      
+      --toc-active-bg: rgba(124, 58, 237, 0.15);
+      --toc-active-text: #A78BFA;
+    }
+
+    /* Reset and Base Styles */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-primary);
+      line-height: 1.7;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+    }
+
+    p {
+      margin-bottom: 1.25rem;
+      font-weight: 400;
+      font-size: 1.025rem;
+      color: var(--text-secondary);
+    }
+
+    a {
+      color: var(--dm-blue);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    a:hover {
+      color: var(--dm-violet);
+    }
+
+    /* Grid Layout */
+    .app-container {
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar {
+      width: 280px;
+      flex-shrink: 0;
+      background-color: var(--sidebar-bg);
+      border-right: 1px solid var(--border-color);
+      padding: 2rem 1.5rem;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow-y: auto;
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+      z-index: 100;
+    }
+
+    .brand-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .brand-logo {
+      flex-shrink: 0;
+      transition: transform 0.3s ease;
+      object-fit: contain;
+    }
+
+    .brand-logo:hover {
+      transform: scale(1.05) rotate(2deg);
+    }
+
+    .brand-name {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 1.15rem;
+      letter-spacing: 0.05em;
+      background: var(--dm-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .toc-menu {
+      list-style: none;
+      flex-grow: 1;
+    }
+
+    .toc-item {
+      margin-bottom: 0.4rem;
+    }
+
+    .toc-link {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.65rem 0.85rem;
+      color: var(--text-secondary);
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 0.925rem;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .toc-link:hover {
+      background-color: var(--border-color);
+      color: var(--text-primary);
+      padding-left: 1.1rem;
+    }
+
+    .toc-link.active {
+      background-color: var(--toc-active-bg);
+      color: var(--toc-active-text);
+      font-weight: 600;
+    }
+
+    .toc-icon {
+      font-size: 1.1rem;
+      width: 20px;
+      text-align: center;
+    }
+
+    /* Sidebar Footer */
+    .sidebar-footer {
+      border-top: 1px solid var(--border-color);
+      padding-top: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .theme-toggle-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      padding: 0.65rem;
+      background-color: var(--border-color);
+      border: none;
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .theme-toggle-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    /* Main Content */
+    .main-content {
+      flex-grow: 1;
+      padding: 2rem 3rem;
+      max-width: 1200px;
+      overflow-x: hidden;
+    }
+
+    /* Hero Section */
+    .hero-card {
+      position: relative;
+      background: var(--hero-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 2rem 2.5rem;
+      margin-bottom: 2.5rem;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      inset: 0.75rem;
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      pointer-events: none;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--dm-blue);
+      margin-bottom: 0.75rem;
+    }
+
+    .hero-eyebrow::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--dm-cyan);
+      box-shadow: 0 0 8px var(--dm-cyan);
+    }
+
+    .hero-title {
+      font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+      font-weight: 900;
+      line-height: 1.1;
+      background: var(--dm-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(0.95rem, 1.5vw, 1.1rem);
+      font-weight: 400;
+      color: var(--text-secondary);
+      max-width: 750px;
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+
+    .hero-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-chip {
+      background-color: var(--accent-soft);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 0.35rem 0.85rem;
+      border-radius: 9999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    /* KPI Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .kpi-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.1rem;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--dm-blue);
+    }
+
+    .kpi-num {
+      display: block;
+      font-family: 'Outfit', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      line-height: 1.1;
+      background: var(--dm-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.35rem;
+    }
+
+    .kpi-label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Content Sections */
+    .content-section {
+      margin-bottom: 5rem;
+      scroll-margin-top: 3rem;
+    }
+
+    .section-title {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--border-color);
+      position: relative;
+    }
+
+    .section-title::after {
+      content: "";
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 80px;
+      height: 2px;
+      background: var(--dm-gradient);
+    }
+
+    .section-lead {
+      font-size: 1.15rem;
+      color: var(--text-primary);
+      font-weight: 500;
+      margin-bottom: 1.75rem;
+      line-height: 1.6;
+    }
+
+    /* Card Wrapper */
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 2.25rem;
+      box-shadow: var(--shadow-md);
+      margin-bottom: 2rem;
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-lg);
+    }
+
+    /* Modern Callouts */
+    .callout-box {
+      background-color: var(--callout-bg);
+      border-left: 4px solid var(--callout-border);
+      padding: 1.5rem;
+      border-radius: 0 12px 12px 0;
+      margin: 2rem 0;
+      position: relative;
+    }
+
+    .callout-title {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .callout-desc {
+      font-size: 0.95rem;
+      margin-bottom: 0;
+      color: var(--text-secondary);
+    }
+
+    /* Strategic Insights Grid */
+    .insights-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+      margin: 2rem 0;
+    }
+
+    .insight-item {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .insight-item:hover {
+      border-color: var(--dm-cyan);
+      transform: translateY(-2px);
+    }
+
+    .insight-badge {
+      display: inline-block;
+      background-color: var(--accent-soft);
+      color: var(--dm-blue);
+      font-size: 0.725rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.25rem 0.65rem;
+      border-radius: 4px;
+      margin-bottom: 0.75rem;
+    }
+
+    .insight-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .insight-text {
+      font-size: 0.925rem;
+      color: var(--text-secondary);
+      margin-bottom: 0;
+    }
+
+    /* Interactive Table Widget */
+    .table-container {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .modern-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.925rem;
+    }
+
+    .modern-table th {
+      background-color: var(--bg-color);
+      color: var(--text-primary);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      padding: 1rem 1.25rem;
+      border-bottom: 1.5px solid var(--border-color);
+      white-space: nowrap;
+    }
+
+    .modern-table td {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      transition: background-color 0.2s ease;
+    }
+
+    .modern-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .modern-table tr:hover td {
+      background-color: var(--accent-soft);
+    }
+
+    .modern-table tr.total-row td {
+      font-weight: 700;
+      background-color: var(--bg-color);
+      color: var(--text-primary);
+    }
+
+    /* Search & Variable Widget */
+    .search-widget {
+      margin-bottom: 1.5rem;
+    }
+
+    .search-input-wrapper {
+      position: relative;
+      margin-bottom: 1rem;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.85rem 1.25rem;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      background-color: var(--card-bg);
+      color: var(--text-primary);
+      outline: none;
+      transition: all 0.2s ease;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .search-input:focus {
+      border-color: var(--dm-blue);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    .filter-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .filter-pill {
+      background-color: var(--bg-color);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      padding: 0.4rem 1rem;
+      border-radius: 8px;
+      font-size: 0.825rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .filter-pill:hover, .filter-pill.active {
+      background-color: var(--dm-blue);
+      border-color: var(--dm-blue);
+      color: #FFFFFF;
+    }
+
+    /* Dictionary List Styling */
+    .dict-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+      max-height: 400px;
+      overflow-y: auto;
+      padding: 0.5rem;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      background-color: var(--bg-color);
+    }
+
+    .dict-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
+    }
+
+    .dict-card:hover {
+      border-color: var(--dm-violet);
+      box-shadow: var(--shadow-md);
+    }
+
+    .dict-badge {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 0.85rem;
+      color: #FFFFFF;
+      background: var(--dm-gradient);
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      margin-right: 0.5rem;
+    }
+
+    .dict-type {
+      font-size: 0.725rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .dict-meaning {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-top: 0.5rem;
+      line-height: 1.4;
+    }
+
+    /* Split Grid Figure Layout (Scrolling continuo estructurado) */
+    .figures-container {
+      display: flex;
+      flex-direction: column;
+      gap: 3.5rem;
+      margin: 1.5rem 0;
+    }
+
+    .figure-row {
+      display: grid;
+      grid-template-columns: 1.25fr 0.75fr;
+      gap: 2.5rem;
+      align-items: center;
+      padding-bottom: 3.5rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .figure-row:last-child {
+      padding-bottom: 0;
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+
+    .figure-chart {
+      width: 100%;
+    }
+
+    .figure-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .figure-info h4 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .figure-info p {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+    }
+
+    .figure-info p:last-child {
+      margin-bottom: 0;
+    }
+
+    .figure-info ul {
+      margin-left: 1.25rem;
+      margin-bottom: 1rem;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .figure-info li {
+      margin-bottom: 0.4rem;
+    }
+
+    @media (max-width: 900px) {
+      .figure-row {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding-bottom: 2.5rem;
+      }
+    }
+
+    /* Images */
+    .chart-wrapper {
+      position: relative;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      transition: all 0.3s ease;
+      background-color: #FFFFFF;
+      margin-bottom: 1.5rem;
+    }
+
+    .chart-wrapper:hover {
+      box-shadow: var(--shadow-xl);
+      transform: translateY(-2px);
+    }
+
+    .chart-img {
+      display: block;
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      max-height: 520px;
+    }
+
+    .chart-caption {
+      font-size: 0.825rem;
+      color: var(--text-secondary);
+      padding: 0.75rem 1.25rem;
+      background-color: var(--bg-color);
+      border-top: 1px solid var(--border-color);
+      text-align: center;
+      font-style: italic;
+    }
+
+    /* Footer */
+    .app-footer {
+      border-top: 1px solid var(--border-color);
+      padding: 2.5rem 0 0;
+      margin-top: 6rem;
+      text-align: center;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .footer-link {
+      font-weight: 500;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .footer-link:hover {
+      color: var(--dm-blue);
+    }
+
+    .copyright {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Highlight badge for Table 2 values */
+    .poverty-high {
+      background-color: #FEF2F2 !important;
+      color: #EF4444 !important;
+      font-weight: 600;
+    }
+    
+    .poverty-low {
+      background-color: #F0FDF4 !important;
+      color: #10B981 !important;
+      font-weight: 600;
+    }
+
+    .theme-color-cell {
+      background-color: var(--accent-soft-cyan);
+      font-weight: 600;
+    }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 1024px) {
+      .app-container {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        padding: 1.5rem;
+      }
+      .toc-menu {
+        display: flex;
+        overflow-x: auto;
+        gap: 0.5rem;
+        padding-bottom: 0.5rem;
+      }
+      .toc-link {
+        white-space: nowrap;
+      }
+      .sidebar-footer {
+        margin-top: 1rem;
+        padding-top: 1rem;
+      }
+      .main-content {
+        padding: 2rem 1.5rem;
+      }
+      .hero-card {
+        padding: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+      <div>
+        <div class="brand-header">
+          <!-- Logo Oficial Cargado desde el OneDrive del Kit de Marca -->
+          <img class="brand-logo" src="assets/brand/01-svg-vectorial/01-principal.svg" alt="Daniel Molina Logo" width="46" height="32">
+          <span class="brand-name">DANIEL MOLINA</span>
+        </div>
+        
+        <!-- Table of Contents Menu -->
+        <ul class="toc-menu">
+          <li class="toc-item">
+            <a href="#hero" class="toc-link active" data-sec="hero">
+              <i data-lucide="zap" class="toc-icon"></i> Inicio
+            </a>
+          </li>
+          <li class="toc-item">
+            <a href="#resumen" class="toc-link" data-sec="resumen">
+              <i data-lucide="bar-chart-2" class="toc-icon"></i> Resumen Ejecutivo
+            </a>
+          </li>
+          <li class="toc-item">
+            <a href="#metodologia" class="toc-link" data-sec="metodologia">
+              <i data-lucide="flask-conical" class="toc-icon"></i> Metodología y Datos
+            </a>
+          </li>
+          <li class="toc-item">
+            <a href="#resultados" class="toc-link" data-sec="resultados">
+              <i data-lucide="map" class="toc-icon"></i> Resultados Regionales
+            </a>
+          </li>
+          <li class="toc-item">
+            <a href="#multivariado" class="toc-link" data-sec="multivariado">
+              <i data-lucide="network" class="toc-icon"></i> Estructura Multivariada
+            </a>
+          </li>
+          <li class="toc-item">
+            <a href="#politicas" class="toc-link" data-sec="politicas">
+              <i data-lucide="lightbulb" class="toc-icon"></i> Implicaciones
+            </a>
+          </li>
+          <li class="toc-item">
+            <a href="#conclusiones" class="toc-link" data-sec="conclusiones">
+              <i data-lucide="sparkles" class="toc-icon"></i> Conclusiones
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Theme Switcher inside Sidebar -->
+      <div class="sidebar-footer">
+        <button class="theme-toggle-btn" id="theme-toggle">
+          <i data-lucide="moon" id="theme-icon"></i> Modo Oscuro
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      
+      <!-- HERO / HEADER SECTION -->
+      <section class="hero-card" id="hero">
+        <div class="hero-eyebrow">Proyecto de Investigación Analítica</div>
+        <h1 class="hero-title">Pobreza Multidimensional en Colombia</h1>
+        <p class="hero-subtitle">Cruce de microdatos, estimación poblacional calibrada y lectura multivariada (PCA) de las privaciones sociales en el territorio nacional.</p>
+        
+        <div class="hero-chips">
+          <span class="hero-chip">Autor: Daniel José Molina Barrios</span>
+          <span class="hero-chip">Microdatos: DANE ECV 2025</span>
+          <span class="hero-chip">Metodología: Alkire-Foster & PCA</span>
+          <span class="hero-chip">Enfoque: Analítica de Impacto Social</span>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <span class="kpi-num">9,9%</span>
+            <span class="kpi-label">Incidencia Nacional</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-num">5,22 M</span>
+            <span class="kpi-label">Personas en Pobreza</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-num">18,2%</span>
+            <span class="kpi-label">Máx. Pobreza (Amazonía)</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-num">2,2%</span>
+            <span class="kpi-label">Mín. Pobreza (Bogotá)</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 1. RESUMEN EJECUTIVO -->
+      <section class="content-section" id="resumen">
+        <h2 class="section-title">Resumen Ejecutivo</h2>
+        <p class="section-lead">La pobreza multidimensional en Colombia no se define únicamente por una cifra agregada a nivel nacional: es una desigualdad territorial y socialmente estructurada.</p>
+        
+        <div class="card">
+          <p>Este informe de portafolio presenta un pipeline analítico robusto que procesa los microdatos de la <strong>Encuesta Nacional de Calidad de Vida (ECV 2025)</strong> publicada por el <strong>DANE</strong>. El objetivo principal es identificar brechas territoriales, cuantificar la intensidad de las privaciones dominantes y extraer patrones multivariados complejos mediante el <strong>Análisis de Componentes Principales (PCA)</strong>.</p>
+          
+          <p>A diferencia de los reportes estáticos oficiales, este trabajo demuestra capacidades avanzadas en el cruce de bases a nivel hogar, vivienda y personas; el uso calibrado de factores de expansión específicos (<code>FEXP</code> para personas e incidencia poblacional, y <code>FEX_C</code> para conteos de hogares); y el uso de analítica multivariante para detectar perfiles familiares vulnerables.</p>
+        </div>
+
+        <div class="callout-box">
+          <div class="callout-title">
+            <i data-lucide="megaphone" style="color: var(--dm-blue); margin-right: 0.5rem;"></i> Hallazgo Estructural Central
+          </div>
+          <p class="callout-desc">El promedio nacional de incidencia (<strong>9,9%</strong>) oculta dos realidades desconectadas: el eje andino/central muestra una situación favorable (Bogotá registra <strong>2,2%</strong>), mientras las periferias geográficas registran privaciones críticas acumuladas, lideradas por la región de <strong>Amazonía - Orinoquía (18,2%)</strong> y la región <strong>Caribe (17,8%)</strong>.</p>
+        </div>
+
+        <h3 style="margin: 2.5rem 0 1.25rem; font-family:'Outfit', sans-serif;">Cuatro Insights Estratégicos</h3>
+        <div class="insights-grid">
+          <div class="insight-item">
+            <span class="insight-badge">Geografía</span>
+            <h4 class="insight-title">Territorialidad</h4>
+            <p class="insight-text">Caribe y Amazonía-Orinoquía concentran las incidencias más severas, exigiendo priorización geográfica sobre los promedios.</p>
+          </div>
+          <div class="insight-item">
+            <span class="insight-badge" style="background-color: rgba(124, 58, 237, 0.1); color: var(--dm-violet);">Capital Humano</span>
+            <h4 class="insight-title">Educación Colectiva</h4>
+            <p class="insight-text">El bajo logro educativo es la privación más persistente y la educación superior opera como el escudo más potente.</p>
+          </div>
+          <div class="insight-item">
+            <span class="insight-badge" style="background-color: rgba(16, 185, 129, 0.1); color: var(--dm-green);">Economía</span>
+            <h4 class="insight-title">Informalidad Laboral</h4>
+            <p class="insight-text">La privación en las condiciones de empleo formal actúa como un cuello de botella transversal para el desarrollo.</p>
+          </div>
+          <div class="insight-item">
+            <span class="insight-badge" style="background-color: rgba(6, 182, 212, 0.1); color: var(--dm-cyan);">Demografía</span>
+            <h4 class="insight-title">Carga Familiar</h4>
+            <p class="insight-text">El tamaño del hogar, el hacinamiento y la presencia de menores correlacionan con perfiles de privación severa.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. DATOS Y METODOLOGÍA -->
+      <section class="content-section" id="metodologia">
+        <h2 class="section-title">Datos y Metodología</h2>
+        <p class="section-lead">Un pipeline reproducible que respeta los diseños muestrales complejos y traduce microdatos a información de alto valor público.</p>
+        
+        <div class="card">
+          <h3 style="margin-bottom: 1rem; font-family:'Outfit';">Pipeline de Datos y Estimación</h3>
+          <p>Para la construcción de los indicadores, el orquestador modular en R integra las encuestas de vivienda, hogar y personas del DANE 2025. Se aplican estrictamente dos factores de expansión:</p>
+          <ul>
+            <li><code>FEX_C</code>: Factor para estimaciones a nivel de hogares (vivienda, servicios, hacinamiento).</li>
+            <li><code>FEXP</code>: Factor calibrado para personas (educación, empleo, demografía e incidencia total).</li>
+          </ul>
+          <p style="margin-top: 1rem;">Para blindar la exactitud del reporte, los totales nacionales se computan con la base nacional calibrada por el DANE, mientras que las incidencias regionales se obtienen de la base departamental, eliminando desfases en las estimaciones territoriales.</p>
+        </div>
+
+        <!-- Interactive Variable Explorer -->
+        <div class="card" style="border-color: var(--dm-cyan);">
+          <h3 style="margin-bottom: 1rem; font-family:'Outfit'; font-weight: 800; display:flex; align-items:center; gap:0.5rem;">
+            <i data-lucide="search" style="color: var(--dm-cyan); margin-right: 0.5rem;"></i> Explorador Interactivo de Variables
+          </h3>
+          <p style="font-size:0.9rem;">Filtra y busca entre las 30 variables sociodemográficas y de privación incluidas en el Análisis de Componentes Principales (PCA):</p>
+          
+          <div class="search-widget">
+            <div class="search-input-wrapper">
+              <input type="text" id="var-search" class="search-input" placeholder="Buscar por variable, nombre o privación... (Ej: IPM, SUP, LOE)">
+            </div>
+            <div class="filter-pills">
+              <button class="filter-pill active" data-filter="all">Todas</button>
+              <button class="filter-pill" data-filter="Localización">Localización</button>
+              <button class="filter-pill" data-filter="Hogar">Hogar (Privación)</button>
+              <button class="filter-pill" data-filter="Personas">Personas (Demografía)</button>
+            </div>
+          </div>
+          
+          <div class="dict-grid" id="dict-container">
+            <!-- Rendered dynamically by JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. RESULTADOS REGIONALES -->
+      <section class="content-section" id="resultados">
+        <h2 class="section-title">Resultados Regionales</h2>
+        <p class="section-lead">Desigualdad territorial expandida: la geografía colombiana bajo el prisma de la pobreza multidimensional.</p>
+        
+        <div class="card">
+          <h3 style="margin-bottom: 1rem; font-family:'Outfit';">Distribución Regional de Hogares y Personas (IPM 2025)</h3>
+          <p>La siguiente tabla consolida las estimaciones calculadas en R. Resalta la asombrosa brecha: mientras en Bogotá solo el <strong>2.2%</strong> de la población vive en hogares bajo condición de pobreza multidimensional, en la periferia de la Amazonía-Orinoquía el porcentaje escala al <strong>18.2%</strong>, y en la región Caribe al <strong>17.8%</strong>.</p>
+          
+          <div class="table-container">
+            <table class="modern-table">
+              <thead>
+                <tr>
+                  <th rowspan="2">Región Geográfica</th>
+                  <th colspan="3" style="text-align: center; border-bottom: 1px solid var(--border-color);">Hogares Analizados (Expandido)</th>
+                  <th colspan="3" style="text-align: center; border-bottom: 1px solid var(--border-color);">Personas Estimadas (Expandido)</th>
+                  <th rowspan="2" style="text-align: center; background-color: var(--accent-soft-cyan);">Incidencia (%)</th>
+                </tr>
+                <tr>
+                  <th>No Pobre</th>
+                  <th>Pobre</th>
+                  <th>Total</th>
+                  <th>No Pobre</th>
+                  <th>Pobre</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody id="table2-body">
+                <tr>
+                  <td>Bogotá, D.C. (Cabecera)</td>
+                  <td>3.132.150</td>
+                  <td>45.664</td>
+                  <td>3.177.814</td>
+                  <td>7.943.532</td>
+                  <td>180.446</td>
+                  <td>8.123.978</td>
+                  <td class="poverty-low" style="text-align: center;">2,2%</td>
+                </tr>
+                <tr>
+                  <td>Pacífica</td>
+                  <td>2.812.163</td>
+                  <td>267.199</td>
+                  <td>3.079.362</td>
+                  <td>7.641.105</td>
+                  <td>824.814</td>
+                  <td>8.465.919</td>
+                  <td style="text-align: center;">9,7%</td>
+                </tr>
+                <tr>
+                  <td>Amazonía - Orinoquía</td>
+                  <td>500.269</td>
+                  <td>83.038</td>
+                  <td>583.307</td>
+                  <td>1.280.990</td>
+                  <td>284.709</td>
+                  <td>1.565.699</td>
+                  <td class="poverty-high" style="text-align: center;">18,2%</td>
+                </tr>
+                <tr>
+                  <td>Central</td>
+                  <td>4.316.882</td>
+                  <td>365.650</td>
+                  <td>4.682.532</td>
+                  <td>11.667.444</td>
+                  <td>1.201.343</td>
+                  <td>12.868.787</td>
+                  <td style="text-align: center;">9,3%</td>
+                </tr>
+                <tr>
+                  <td>Oriental</td>
+                  <td>3.424.329</td>
+                  <td>224.558</td>
+                  <td>3.648.887</td>
+                  <td>9.473.431</td>
+                  <td>763.190</td>
+                  <td>10.236.621</td>
+                  <td style="text-align: center;">7,5%</td>
+                </tr>
+                <tr>
+                  <td>Caribe</td>
+                  <td>3.195.022</td>
+                  <td>585.367</td>
+                  <td>3.780.389</td>
+                  <td>9.951.911</td>
+                  <td>2.155.187</td>
+                  <td>12.107.098</td>
+                  <td class="poverty-high" style="text-align: center;">17,8%</td>
+                </tr>
+                <tr class="total-row">
+                  <td>Total nacional</td>
+                  <td>17.201.695</td>
+                  <td>1.519.872</td>
+                  <td>18.721.567</td>
+                  <td>47.481.603</td>
+                  <td>5.224.690</td>
+                  <td>52.706.293</td>
+                  <td class="theme-color-cell" style="text-align: center;">9,9%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.5rem; text-align: right;">Fuente: estimaciones del pipeline a partir de microdatos DANE 2025.</p>
+        </div>
+
+        <!-- Regional Descriptive Charts Gallery (Continuous Vertical Scrolling) -->
+        <div class="card">
+          <h3 style="margin-bottom: 2rem; font-family:'Outfit'; border-bottom: 1.5px solid var(--border-color); padding-bottom: 0.75rem;">
+            <i data-lucide="bar-chart-3" style="color: var(--dm-blue); vertical-align: middle; margin-right: 0.5rem;"></i> Análisis de Privaciones Clave por Territorio
+          </h3>
+          
+          <div class="figures-container">
+            <!-- Figura 1 -->
+            <div class="figure-row">
+              <div class="figure-chart">
+                <div class="chart-wrapper">
+                  <img src="resultados/graficos_articulo/Figura_1_Pobreza_Regiones.png" alt="Distribución regional de hogares pobres" class="chart-img">
+                  <div class="chart-caption">Figura 1. Porcentaje de Hogares pobres y no pobres por regiones geográficas.</div>
+                </div>
+              </div>
+              <div class="figure-info">
+                <span class="insight-badge">Incidencia Regional</span>
+                <h4><i data-lucide="globe"></i> Asimetría de Pobreza</h4>
+                <p>La <strong>Figura 1</strong> ilustra visualmente la asimetría regional en el territorio colombiano. Caribe y Amazonía - Orinoquía destacan por tener una proporción visiblemente mayor de hogares pobres, superando la barra crítica nacional. En contraste, Bogotá y la región Oriental registran la mayor consolidación de hogares no pobres.</p>
+                <ul>
+                  <li><strong>Brecha Extrema:</strong> Amazonía-Orinoquía registra un 18,2% de pobreza frente al 2,2% de Bogotá.</li>
+                  <li><strong>Caribe Vulnerable:</strong> Registra la segunda incidencia más alta (17,8%) con alta densidad de población.</li>
+                </ul>
+              </div>
+            </div>
+            
+            <!-- Figura 2 -->
+            <div class="figure-row">
+              <div class="figure-chart">
+                <div class="chart-wrapper">
+                  <img src="resultados/graficos_articulo/Figura_2_LOE_Regiones.png" alt="Privación por bajo logro educativo" class="chart-img">
+                  <div class="chart-caption">Figura 2. Porcentaje de hogares con privación en Logro Educativo (LOE) por región.</div>
+                </div>
+              </div>
+              <div class="figure-info">
+                <span class="insight-badge" style="background-color: rgba(124, 58, 237, 0.1); color: var(--dm-violet);">Capital Humano</span>
+                <h4><i data-lucide="book-open"></i> Bajo Logro Educativo</h4>
+                <p>La <strong>Figura 2</strong> revela que el Bajo Logro Educativo (LOE) es una privación estructural en todo el país. No obstante, las regiones con mayores tasas de pobreza multidimensional, como Amazonía-Orinoquía y Caribe, muestran también los mayores rezagos en educación de sus integrantes adultos, actuando como un cuello de botella generacional.</p>
+                <ul>
+                  <li><strong>Trampa Intergeneracional:</strong> Los adultos sin escolaridad secundaria limitan los ingresos del hogar.</li>
+                  <li><strong>Rezago Periférico:</strong> Las regiones alejadas del centro andino acumulan los porcentajes de LOE más altos.</li>
+                </ul>
+              </div>
+            </div>
+            
+            <!-- Figura 3 -->
+            <div class="figure-row">
+              <div class="figure-chart">
+                <div class="chart-wrapper">
+                  <img src="resultados/graficos_articulo/Figura_3_EMF_Regiones.png" alt="Privación por condiciones de empleo formal" class="chart-img">
+                  <div class="chart-caption">Figura 3. Privación por condiciones de empleo formal (EMF) según región.</div>
+                </div>
+              </div>
+              <div class="figure-info">
+                <span class="insight-badge" style="background-color: rgba(16, 185, 129, 0.1); color: var(--dm-green);">Economía Familiar</span>
+                <h4><i data-lucide="briefcase"></i> Informalidad Laboral</h4>
+                <p>La <strong>Figura 3</strong> muestra que la privación de empleo formal en el hogar (informalidad) es la dimensión más transversal y alta en todas las regiones del país. En las zonas costeras y periféricas, el porcentaje roza niveles críticos, evidenciando que la informalidad laboral es el principal mecanismo de persistencia de la pobreza en Colombia.</p>
+                <ul>
+                  <li><strong>Vulnerabilidad Constante:</strong> Afecta a la gran mayoría de la población ocupada en las periferias.</li>
+                  <li><strong>Sin Red de Seguridad:</strong> La informalidad laboral impide el acceso a salud contributiva y pensiones.</li>
+                </ul>
+              </div>
+            </div>
+            
+            <!-- Figura 4 -->
+            <div class="figure-row">
+              <div class="figure-chart">
+                <div class="chart-wrapper">
+                  <img src="resultados/graficos_articulo/Figura_4_SUP_Regiones.png" alt="Porcentaje de personas en el hogar con educación superior" class="chart-img">
+                  <div class="chart-caption">Figura 4. Presencia de personas con educación superior en el hogar por regiones.</div>
+                </div>
+              </div>
+              <div class="figure-info">
+                <span class="insight-badge" style="background-color: rgba(6, 182, 212, 0.1); color: var(--dm-cyan);">Movilidad Social</span>
+                <h4><i data-lucide="graduation-cap"></i> El Escudo de la Educación</h4>
+                <p>La <strong>Figura 4</strong> ilustra la contraparte protectora de la educación. Los hogares que acumulan 1, 2 o más personas con educación superior (SUP) tienden a concentrarse en las regiones andinas y cabeceras (como Bogotá), blindando a estas familias contra la vulnerabilidad socioeconómica.</p>
+                <ul>
+                  <li><strong>Efecto Protector:</strong> La educación técnica o profesional actúa como barrera de salida contra la pobreza.</li>
+                  <li><strong>Centralización del Talento:</strong> Bogotá lidera ampliamente en la acumulación de capital humano profesional.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. ESTRUCTURA MULTIVARIADA -->
+      <section class="content-section" id="multivariado">
+        <h2 class="section-title">Estructura Multivariada (PCA)</h2>
+        <p class="section-lead">Más allá de los promedios simples: descodificando la red latente de privaciones con Análisis de Componentes Principales.</p>
+        
+        <div class="card">
+          <h3 style="margin-bottom: 1rem; font-family:'Outfit';">Estructura de Correlaciones</h3>
+          <p>Para entender las interdependencias de las variables, se construyeron matrices de correlación bivariada que revelan cómo se asocian las privaciones físicas del hogar con las variables de personas (demografía y educación):</p>
+          
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
+            <div class="chart-wrapper">
+              <img src="resultados/graficos_articulo/Figura_5_Correlacion_Hogar.png" alt="Correlaciones del Hogar" class="chart-img" style="max-height: 380px; object-fit: contain; background: #FFF;">
+              <div class="chart-caption">Figura 5. Matriz de correlación de variables de Hogar e IPM.</div>
+            </div>
+            <div class="chart-wrapper">
+              <img src="resultados/graficos_articulo/Figura_6_Correlacion_Personas.png" alt="Correlaciones de Personas" class="chart-img" style="max-height: 380px; object-fit: contain; background: #FFF;">
+              <div class="chart-caption">Figura 6. Matriz de correlación de variables de Personas e IPM.</div>
+            </div>
+          </div>
+          <p>El análisis resalta correlaciones sumamente fuertes entre la condición del IPM y privaciones educativas (`LOE`) y laborales (`EMF`). A nivel de personas, la presencia de integrantes con educación superior (`SUP`) correlaciona negativamente con el IPM, sirviendo como el principal factor mitigador.</p>
+        </div>
+
+        <!-- PCA Component Loadings & Scree -->
+        <div class="card">
+          <h3 style="margin-bottom: 1rem; font-family:'Outfit';">Análisis de Componentes Principales</h3>
+          <p>El PCA realizado sobre 28 variables sociodemográficas y de privación condensa la varianza del fenómeno. La **Figura 7** (Scree Plot) muestra el porcentaje de varianza explicada por cada componente. Las dimensiones 1 y 2 logran sintetizar los principales ejes explicativos:</p>
+          
+          <div class="chart-wrapper" style="max-width: 600px; margin: 1.5rem auto;">
+            <img src="resultados/graficos_articulo/Figura_7_PCA_Scree.png" alt="PCA Scree Plot" class="chart-img">
+            <div class="chart-caption">Figura 7. Scree Plot - Varianza explicada por componente principal.</div>
+          </div>
+
+          <h4 style="margin: 2rem 0 1rem; font-family:'Outfit';">Matriz de Cargas Factoriales (Tabla 3)</h4>
+          <p style="font-size: 0.9rem;">Las cargas de las variables en las primeras cinco componentes revelan la naturaleza latente de cada eje:</p>
+          
+          <div class="table-container" style="max-height: 350px; overflow-y: auto;">
+            <table class="modern-table" style="font-size:0.85rem;">
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Dim.1 (Composición/Tamaño)</th>
+                  <th>Dim.2 (Pobreza/Educación)</th>
+                  <th>Dim.3 (Ciclo Vital/Mayor)</th>
+                  <th>Dim.4 (Jóvenes/Escolaridad)</th>
+                  <th>Dim.5 (Trabajo Infantil)</th>
+                </tr>
+              </thead>
+              <tbody id="pca-table-body">
+                <!-- Javascript will load the pre-extracted PCA loadings here -->
+              </tbody>
+            </table>
+          </div>
+          <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.5rem; text-align: right;">Cargas factoriales calculadas con rotación e insumos calibrados.</p>
+        </div>
+
+        <!-- Biplots Interactive Section (Continuous Vertical Scrolling) -->
+        <div class="card" style="border-color: var(--dm-violet);">
+          <h3 style="margin-bottom: 2rem; font-family:'Outfit'; color: var(--dm-violet); border-bottom: 1.5px solid var(--border-color); padding-bottom: 0.75rem;">
+            <i data-lucide="layout-grid" style="vertical-align: middle; margin-right: 0.5rem;"></i> Visor de Planos Factoriales (Biplots)
+          </h3>
+          <p style="margin-bottom: 2.5rem;">El PCA proyecta los hogares en mapas de coordenadas. A continuación, se detalla la ordenación espacial de los hogares colombianos según su condición de pobreza, el volumen de miembros y las transiciones del ciclo vital familiar:</p>
+          
+          <div class="figures-container">
+            <!-- Figura 8 -->
+            <div class="figure-row">
+              <div class="figure-chart">
+                <div class="chart-wrapper">
+                  <img src="resultados/graficos_articulo/Figura_8_PCA_Biplot_POB.png" alt="Biplot Pobreza" class="chart-img">
+                  <div class="chart-caption">Figura 8. Plano factorial 1-2 según condición de pobreza del hogar.</div>
+                </div>
+              </div>
+              <div class="figure-info">
+                <span class="insight-badge" style="background-color: rgba(124, 58, 237, 0.1); color: var(--dm-violet);">Segregación Factorial</span>
+                <h4><i data-lucide="shield-alert"></i> Brecha de Pobreza</h4>
+                <p>El <strong>Plano 1-2 por Pobreza (Figura 8)</strong> discrimina fuertemente los hogares según su bienestar. El vector de condición pobre (rojo) se alinea directamente con privaciones críticas como <code>IPM</code>, <code>LOE</code> (bajo logro educativo), <code>ANA</code> (analfabetismo) y condiciones de empleo informal. El polo opuesto (azul) se agrupa en torno a la educación superior (<code>SUP</code>), estableciendo una frontera clara de ventaja social.</p>
+                <ul>
+                  <li><strong>Alineación del Riesgo:</strong> Las privaciones sociales y la pobreza se concentran fuertemente en el cuadrante inferior derecho.</li>
+                  <li><strong>Escudo de Capital Humano:</strong> La educación superior (<code>SUP</code>) tira de los hogares estables en la dirección opuesta.</li>
+                </ul>
+              </div>
+            </div>
+            
+            <!-- Figura 9 -->
+            <div class="figure-row">
+              <div class="figure-chart">
+                <div class="chart-wrapper">
+                  <img src="resultados/graficos_articulo/Figura_9_PCA_Biplot_PER.png" alt="Biplot Personas" class="chart-img">
+                  <div class="chart-caption">Figura 9. Plano factorial 1-2 coloreado por número de personas en el hogar.</div>
+                </div>
+              </div>
+              <div class="figure-info">
+                <span class="insight-badge">Estructura Demográfica</span>
+                <h4><i data-lucide="users"></i> Tamaño del Hogar</h4>
+                <p>El <strong>Biplot por Tamaño de Hogar (Figura 9)</strong> revela que la Dimensión 1 ordena a los hogares de forma horizontal según su tamaño y volumen de integrantes (<code>PER</code>). A la derecha (tonos cálidos) se ubican los hogares grandes con alta tasa de menores de edad (<code>MEN</code>) y hacinamiento crítico, mientras a la izquierda se concentran los hogares unipersonales o pequeños.</p>
+                <ul>
+                  <li><strong>Eje de Volumen:</strong> La Dimensión 1 representa de manera casi perfecta el volumen demográfico del hogar.</li>
+                  <li><strong>Carga Infantil:</strong> La presencia de menores de edad (<code>MEN</code>) empuja la posición de los hogares hacia la derecha.</li>
+                </ul>
+              </div>
+            </div>
+            
+            <!-- Figura 10 -->
+            <div class="figure-row">
+              <div class="figure-chart">
+                <div class="chart-wrapper">
+                  <img src="resultados/graficos_articulo/Figura_10_PCA_Biplot_MAY.png" alt="Biplot Adulto Mayor" class="chart-img">
+                  <div class="chart-caption">Figura 10. Plano factorial 3-4 coloreado por presencia de personas mayores.</div>
+                </div>
+              </div>
+              <div class="figure-info">
+                <span class="insight-badge" style="background-color: rgba(6, 182, 212, 0.1); color: var(--dm-cyan);">Ciclo Vital</span>
+                <h4><i data-lucide="calendar"></i> Envejecimiento Familiar</h4>
+                <p>El <strong>Biplot del Plano 3-4 (Figura 10)</strong> captura las transiciones del ciclo vital y el envejecimiento familiar en el país. El eje vertical ordena los hogares por la presencia de adultos mayores de 55 años o más (<code>MAY</code>) y privaciones físicas de vivienda, separándolos con claridad de hogares jóvenes con cargas de escolarización activa.</p>
+                <ul>
+                  <li><strong>Eje de Envejecimiento:</strong> La Dimensión 3 distingue hogares con integrantes mayores de 55 años (<code>MAY</code>) en el sector superior.</li>
+                  <li><strong>Contraste Generacional:</strong> En el sector inferior se encuentran hogares jóvenes con menores de 18 años y estudiantes activos.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. IMPLICACIONES DE POLÍTICA PÚBLICA -->
+      <section class="content-section" id="politicas">
+        <h2 class="section-title">Implicaciones de Política Pública</h2>
+        <p class="section-lead">Traduciendo el diagnóstico analítico en rutas estratégicas y prioridades gubernamentales accionables.</p>
+        
+        <div class="card">
+          <p>Los hallazgos empíricos del IPM 2025 demuestran que la pobreza multidimensional no responde a una causa única, sino a un **ecosistema de privaciones conectadas** que difiere según el territorio y la estructura familiar.</p>
+          
+          <div class="insights-grid" style="grid-template-columns: 1fr;">
+            <div class="insight-item" style="border-left: 4px solid var(--dm-blue); background: var(--bg-color);">
+              <span class="insight-badge">Acción 1</span>
+              <h4 class="insight-title">Focalización Regional Diferenciada</h4>
+              <p class="insight-text">Es urgente superar las asignaciones presupuestales basadas en promedios nacionales. El Caribe (especialmente departamentos rurales) y la Amazonía-Orinoquía requieren programas de infraestructura social básica (agua potable, excretas) integrados a la oferta productiva regional.</p>
+            </div>
+            <div class="insight-item" style="border-left: 4px solid var(--dm-violet); background: var(--bg-color);">
+              <span class="insight-badge" style="background-color: var(--accent-soft); color: var(--dm-violet);">Acción 2</span>
+              <h4 class="insight-title">Articulación Educativa Generacional</h4>
+              <p class="insight-text">Dado que el bajo logro educativo (`LOE`) es la privación más persistente, la política social debe conectar las transferencias monetarias condicionadas no solo con la asistencia escolar básica, sino con incentivos fuertes para la retención y tránsito efectivo a la **Educación Superior** en jóvenes de hogares vulnerables.</p>
+            </div>
+            <div class="insight-item" style="border-left: 4px solid var(--dm-green); background: var(--bg-color);">
+              <span class="insight-badge" style="background-color: rgba(16, 185, 129, 0.15); color: var(--dm-green);">Acción 3</span>
+              <h4 class="insight-title">Protección y Formalización Laboral</h4>
+              <p class="insight-text">La altísima privación de empleo formal en todas las regiones (incluso andinas) demuestra que los subsidios asistenciales son insuficientes. Se requiere una estrategia agresiva de formalización y protección a microempresas locales en las periferias geográficas para romper el ciclo de informalidad.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. CONCLUSIONES -->
+      <section class="content-section" id="conclusiones">
+        <h2 class="section-title">Valor del Portafolio & Conclusiones</h2>
+        
+        <div class="card" style="background: var(--hero-bg); border-color: var(--dm-cyan);">
+          <h3 style="font-family: 'Outfit'; margin-bottom: 1rem;">Capacidades Técnicas Demostradas</h3>
+          <p style="font-size:1.05rem;">Este proyecto de analítica social ejemplifica un flujo de trabajo extremo a extremo (End-to-End) en ciencia de datos aplicada a las políticas públicas:</p>
+          
+          <ul style="margin-left: 1.5rem; margin-bottom: 1.5rem; color: var(--text-secondary);">
+            <li style="margin-bottom:0.5rem;"><strong>Procesamiento de Microdatos Complejos:</strong> Carga y cruce de grandes volúmenes de datos a tres niveles de desagregación (vivienda, hogar y personas), respetando diseños muestrales y factores de expansión de diseño (<code>FEXP</code> y <code>FEX_C</code>).</li>
+            <li style="margin-bottom:0.5rem;"><strong>Métodos Estadísticos Multivariados Robustos:</strong> Aplicación de PCA y estimaciones por regiones para separar la variación real de la estática de los promedios oficiales agregados.</li>
+            <li style="margin-bottom:0.5rem;"><strong>Visualización Interactiva Profesional:</strong> Creación de gráficos analíticos de alta definición (R ggplot2) y diseño de interfaz web moderna y autoejecutable.</li>
+          </ul>
+
+          <h3 style="font-family: 'Outfit'; margin-bottom: 1rem;">Conclusiones Analíticas</h3>
+          <p>1. La pobreza multidimensional en Colombia se comporta como un **fenómeno marcadamente espacial**. Las regiones Caribe y Amazonía-Orinoquía exhiben incidencias que duplican la media nacional, mientras Bogotá representa un polo de consolidación social y acumulación de capital humano.</p>
+          <p>2. Las dimensiones del **bajo logro educativo y la informalidad laboral** actúan como los vectores de fuerza predominantes en la ordenación factorial del PCA. Son las dos privaciones que más discriminan entre hogares vulnerables y estables en todo el territorio.</p>
+          <p>3. La **composición del hogar (tamaño de la familia y menores a cargo)** introduce un factor demográfico crítico que intensifica la vulnerabilidad, asociándose fuertemente con hacinamiento y privaciones en el ciclo vital temprano.</p>
+        </div>
+
+        <!-- Download Section -->
+        <div class="card" style="text-align: center; border-color: var(--dm-blue); background-color: var(--accent-soft);">
+          <h3 style="font-family:'Outfit'; margin-bottom: 0.5rem;">¿Deseas explorar los resultados tabulados?</h3>
+          <p style="font-size: 0.95rem; max-width: 600px; margin: 0 auto 1.5rem;">Accede al libro de cálculo oficial en formato Excel con las tablas completas de incidencia regional y cargas de componentes principales:</p>
+          <a href="resultados/Tablas_Articulo_2025.xlsx" class="theme-toggle-btn" style="display:inline-flex; align-items:center; gap:0.5rem; width:auto; padding: 0.85rem 2rem; background: var(--dm-gradient); color:#FFFFFF; border:none; text-shadow:0 1px 2px rgba(0,0,0,0.25);" download>
+            <i data-lucide="download"></i> Descargar Base de Resultados (Excel)
+          </a>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="app-footer">
+        <div class="footer-links">
+          <a href="#" class="footer-link">Daniel Molina Portafolio</a>
+          <a href="https://github.com" class="footer-link">GitHub</a>
+          <a href="https://linkedin.com" class="footer-link">LinkedIn</a>
+        </div>
+        <p class="copyright">Informe de Analítica Social &copy; 2026. Diseñado y programado a mano por Daniel José Molina Barrios.</p>
+      </footer>
+
+    </main>
+
+  </div>
+
+  <script>
+    // Variables Dictionary Data (Tabla 1)
+    const variablesData = [
+      { notacion: "REG", tipo: "Localización", significado: "Región de localización geográfica del hogar en Colombia." },
+      { notacion: "POB", tipo: "Hogar", significado: "Condición de pobreza multidimensional del hogar (Pobre / No Pobre)." },
+      { notacion: "PAR", tipo: "Hogar", significado: "Privación por inadecuado material de paredes exteriores del hogar." },
+      { notacion: "PIS", tipo: "Hogar", significado: "Privación por inadecuado material de pisos de la vivienda." },
+      { notacion: "ALC", tipo: "Hogar", significado: "Privación por inadecuada eliminación de excretas del hogar." },
+      { notacion: "ACU", tipo: "Hogar", significado: "Privación por no acceso a fuente de agua mejorada para consumo." },
+      { notacion: "EMF", tipo: "Hogar", significado: "Privación por tasa de empleo formal colectivo del hogar." },
+      { notacion: "DLD", tipo: "Hogar", significado: "Privación por desempleo de larga duración de los integrantes." },
+      { notacion: "BAS", tipo: "Hogar", significado: "Privación por barreras de acceso a servicios de salud." },
+      { notacion: "ASS", tipo: "Hogar", significado: "Privación por no aseguramiento en salud (Régimen contributivo/subsidiado)." },
+      { notacion: "TRI", tipo: "Hogar", significado: "Privación por presencia de trabajo infantil en el hogar." },
+      { notacion: "ATI", tipo: "Hogar", significado: "Privación por falta de atención integral a la primera infancia." },
+      { notacion: "INE", tipo: "Hogar", significado: "Privación por inasistencia escolar de menores de edad." },
+      { notacion: "RES", tipo: "Hogar", significado: "Privación por rezago escolar de los niños en edad escolar." },
+      { notacion: "ANA", tipo: "Hogar", significado: "Privación por presencia de integrantes con analfabetismo." },
+      { notacion: "LOE", tipo: "Hogar", significado: "Privación por bajo logro educativo de los adultos del hogar." },
+      { notacion: "HAC", tipo: "Hogar", significado: "Privación por hacinamiento crítico (3 o más personas por cuarto)." },
+      { notacion: "CUA", tipo: "Hogar", significado: "Número de cuartos en los que duermen los integrantes del hogar." },
+      { notacion: "PER", tipo: "Hogar", significado: "Número total de personas que componen el hogar." },
+      { notacion: "IPM", tipo: "Hogar", significado: "Índice de Pobreza Multidimensional ponderado del hogar." },
+      { notacion: "PRI", tipo: "Personas", significado: "Número de personas con máximo nivel educativo de primaria." },
+      { notacion: "SEC", tipo: "Personas", significado: "Número de personas con máximo nivel educativo de secundaria." },
+      { notacion: "SUP", tipo: "Personas", significado: "Número de personas con nivel de educación superior o profesional." },
+      { notacion: "NDE", tipo: "Personas", significado: "Número de personas que no declaran su formación académica." },
+      { notacion: "MEN", tipo: "Personas", significado: "Número de integrantes menores de 18 años en el hogar." },
+      { notacion: "ADJ", tipo: "Personas", significado: "Número de integrantes jóvenes con edad entre 18 y 29 años." },
+      { notacion: "ADT", tipo: "Personas", significado: "Número de integrantes adultos con edad entre 30 y 54 años." },
+      { notacion: "MAY", tipo: "Personas", significado: "Número de integrantes adultos mayores con 55 años o más." },
+      { notacion: "HOM", tipo: "Personas", significado: "Número de personas de género masculino en el hogar." },
+      { notacion: "MUJ", tipo: "Personas", significado: "Número de personas de género femenino en el hogar." }
+    ];
+
+    // PCA Loadings Data (Tabla 3)
+    const pcaData = [
+      { v: "PAR", d1: 0.119, d2: 0.242, d3: -0.323, d4: -0.017, d5: 0.270 },
+      { v: "PIS", d1: 0.177, d2: 0.383, d3: -0.353, d4: 0.027, d5: 0.309 },
+      { v: "ALC", d1: 0.212, d2: 0.381, d3: -0.393, d4: -0.028, d5: 0.341 },
+      { v: "ACU", d1: 0.184, d2: 0.401, d3: -0.338, d4: -0.016, d5: 0.283 },
+      { v: "EMF", d1: 0.245, d2: 0.520, d3: 0.105, d4: -0.310, d5: -0.071 },
+      { v: "DLD", d1: -0.304, d2: 0.325, d3: 0.110, d4: 0.178, d5: -0.086 },
+      { v: "BAS", d1: 0.091, d2: 0.064, d3: -0.003, d4: -0.026, d5: 0.058 },
+      { v: "ASS", d1: 0.132, d2: 0.078, d3: 0.026, d4: -0.313, d5: -0.106 },
+      { v: "TRI", d1: 0.190, d2: 0.118, d3: -0.046, d4: 0.049, d5: -0.469 },
+      { v: "ATI", d1: 0.256, d2: -0.084, d3: -0.121, d4: 0.031, d5: -0.022 },
+      { v: "INE", d1: 0.243, d2: 0.163, d3: -0.070, d4: -0.010, d5: -0.488 },
+      { v: "RES", d1: 0.596, d2: 0.032, d3: -0.134, d4: 0.249, d5: -0.311 },
+      { v: "ANA", d1: 0.143, d2: 0.442, d3: 0.060, d4: 0.204, d5: 0.247 },
+      { v: "LOE", d1: 0.105, d2: 0.789, d3: 0.255, d4: 0.118, d5: -0.064 },
+      { v: "HAC", d1: 0.308, d2: 0.109, d3: -0.362, d4: -0.049, d5: -0.035 },
+      { v: "IPM", d1: 0.349, d2: 0.877, d3: 0.013, d4: 0.002, d5: -0.049 },
+      { v: "CUA", d1: 0.579, d2: -0.304, d3: 0.510, d4: 0.046, d5: 0.176 },
+      { v: "PER", d1: 0.933, d2: -0.167, d3: 0.233, d4: 0.010, d5: 0.117 },
+      { v: "PRI", d1: 0.164, d2: 0.569, d3: 0.463, d4: 0.146, d5: -0.022 },
+      { v: "SEC", d1: 0.423, d2: -0.116, d3: 0.118, d4: -0.704, d5: -0.122 },
+      { v: "SUP", d1: -0.057, d2: -0.596, d3: 0.073, d4: 0.390, d5: 0.312 },
+      { v: "NDE", d1: 0.832, d2: -0.064, d3: -0.149, d4: 0.232, d5: 0.046 },
+      { v: "MEN", d1: 0.841, d2: -0.083, d3: -0.206, d4: 0.220, d5: -0.172 },
+      { v: "ADJ", d1: 0.335, d2: -0.165, d3: 0.075, d4: -0.588, d5: 0.301 },
+      { v: "ADT", d1: 0.495, d2: -0.360, d3: -0.031, d4: 0.169, d5: -0.055 },
+      { v: "MAY", d1: -0.187, d2: 0.336, d3: 0.659, d4: 0.121, d5: 0.208 },
+      { v: "HOM", d1: 0.687, d2: -0.083, d3: 0.188, d4: -0.102, d5: 0.097 },
+      { v: "MUJ", d1: 0.690, d2: -0.163, d3: 0.155, d4: 0.114, d5: 0.076 }
+    ];
+
+    // Render Variable Cards
+    const dictContainer = document.getElementById('dict-container');
+    const searchInput = document.getElementById('var-search');
+    const filterPills = document.querySelectorAll('.filter-pill');
+    
+    let activeFilter = 'all';
+    let searchQuery = '';
+
+    function renderDict() {
+      dictContainer.innerHTML = '';
+      const filtered = variablesData.filter(v => {
+        const matchesSearch = v.notacion.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                              v.significado.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesFilter = activeFilter === 'all' || v.tipo === activeFilter;
+        return matchesSearch && matchesFilter;
+      });
+
+      if (filtered.length === 0) {
+        dictContainer.innerHTML = `<div style="grid-column: 1/-1; padding: 2rem; text-align: center; color: var(--text-secondary);">No se encontraron variables coincidentes.</div>`;
+        return;
+      }
+
+      filtered.forEach(v => {
+        const card = document.createElement('div');
+        card.className = 'dict-card';
+        card.innerHTML = `
+          <div style="display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border-color); padding-bottom:0.5rem;">
+            <div>
+              <span class="dict-badge">${v.notacion}</span>
+              <span class="dict-type" style="color: ${v.tipo === 'Hogar' ? 'var(--dm-violet)' : v.tipo === 'Personas' ? 'var(--dm-blue)' : 'var(--dm-cyan)'}">${v.tipo}</span>
+            </div>
+          </div>
+          <p class="dict-meaning">${v.significado}</p>
+        `;
+        dictContainer.appendChild(card);
+      });
+    }
+
+    // Search and Filter Listeners
+    searchInput.addEventListener('input', (e) => {
+      searchQuery = e.target.value;
+      renderDict();
+    });
+
+    filterPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        filterPills.forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        activeFilter = pill.getAttribute('data-filter');
+        renderDict();
+      });
+    });
+
+    // Render PCA Loadings Table
+    const pcaTableBody = document.getElementById('pca-table-body');
+    function renderPcaTable() {
+      pcaData.forEach(r => {
+        const row = document.createElement('tr');
+        
+        // Helper function to highlight strong weights
+        const fmtVal = (val) => {
+          const abs = Math.abs(val);
+          if (abs >= 0.5) return `<strong style="color: var(--dm-violet);">${val.toFixed(3)}</strong>`;
+          if (abs >= 0.3) return `<span style="color: var(--dm-blue); font-weight:600;">${val.toFixed(3)}</span>`;
+          return val.toFixed(3);
+        };
+
+        row.innerHTML = `
+          <td style="font-weight: 700; color: var(--text-primary);">${r.v}</td>
+          <td>${fmtVal(r.d1)}</td>
+          <td>${fmtVal(r.d2)}</td>
+          <td>${fmtVal(r.d3)}</td>
+          <td>${fmtVal(r.d4)}</td>
+          <td>${fmtVal(r.d5)}</td>
+        `;
+        pcaTableBody.appendChild(row);
+      });
+    }
+
+    // Theme Switching
+    const themeToggleBtn = document.getElementById('theme-toggle');
+        const currentTheme = localStorage.getItem('theme') || 'dark';
+    
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    updateThemeUI(currentTheme);
+
+    themeToggleBtn.addEventListener('click', () => {
+      const activeTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = activeTheme === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      updateThemeUI(newTheme);
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    });
+
+    function updateThemeUI(theme) {
+      if (theme === 'dark') {
+        themeToggleBtn.innerHTML = '<i data-lucide="sun" id="theme-icon"></i> Modo Claro';
+      } else {
+        themeToggleBtn.innerHTML = '<i data-lucide="moon" id="theme-icon"></i> Modo Oscuro';
+      }
+    }
+
+    // Pestañas removidas: Refactorizado a visualización secuencial de desplazamiento vertical (scrolling) continuo
+
+    // Dynamic Active TOC State via IntersectionObserver
+    const sections = document.querySelectorAll('.content-section, #hero');
+    const tocLinks = document.querySelectorAll('.toc-link');
+
+    const observerOptions = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.3
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const activeSecId = entry.target.getAttribute('id');
+          
+          tocLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('data-sec') === activeSecId) {
+              link.classList.add('active');
+            }
+          });
+        }
+      });
+    }, observerOptions);
+
+    sections.forEach(sec => observer.observe(sec));
+
+    // Initialize Widget elements on load
+    window.addEventListener('DOMContentLoaded', () => {
+      renderDict();
+      renderPcaTable();
+    });
+
+  </script>
+<script src="https://unpkg.com/lucide@latest"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

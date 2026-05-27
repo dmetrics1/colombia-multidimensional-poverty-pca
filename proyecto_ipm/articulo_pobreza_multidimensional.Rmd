@@ -1,0 +1,644 @@
+---
+title: "Perspectiva Multidimensional de la Pobreza en los Hogares Colombianos: Una Actualización"
+subtitle: "Análisis con datos recientes del IPM (DANE 2025)"
+author:
+  - name: "[Tu nombre completo]"
+    affiliation: "[Tu institución]"
+    email: "[tu correo]"
+  - name: "[Coautor 2]"
+    affiliation: "[Institución]"
+  - name: "[Coautor 3]"
+    affiliation: "[Institución]"
+date: "`r format(Sys.Date(), '%d de %B de %Y')`"
+output:
+  officedown::rdocx_document:
+    reference_docx: null
+    plots:
+      style: Normal
+      align: center
+      fig.lp: "fig:"
+      topcaption: false
+    tables:
+      style: Table
+      layout: autofit
+    page_size:
+      width: 8.5
+      height: 11
+    page_margins:
+      bottom: 1
+      top: 1
+      right: 1.25
+      left: 1.25
+    number_sections: true
+bibliography: referencias.bib
+lang: es
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo    = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  fig.width  = 6.5,
+  fig.height = 4.5,
+  dpi     = 300,
+  out.width = "100%"
+)
+
+# Paquetes necesarios
+library(tidyverse)
+library(readxl)
+library(openxlsx)
+library(ggplot2)
+library(scales)
+library(flextable)
+library(officedown)
+library(officer)
+library(survey)
+library(srvyr)
+library(FactoMineR)
+library(factoextra)
+library(corrplot)
+library(forcats)
+
+# Estilos globales
+tema_articulo <- theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(face = "bold", color = "#333333", size = 16, hjust = 0.5),
+    plot.subtitle = element_text(color = "#666666", size = 12, hjust = 0.5),
+    plot.caption = element_text(color = "#999999", size = 10, hjust = 1),
+    legend.position = "right",
+    legend.title = element_text(face = "bold"),
+    axis.title = element_text(face = "bold", color = "#555555"),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor = element_blank(),
+    strip.text = element_text(face = "bold", size = 12)
+  )
+
+color_cyan <- "#00a0b0"
+color_yellow <- "#f3c533"
+```
+
+\newpage
+
+# Resumen {-}
+
+<!-- REDACTAR: Párrafo único de 200-250 palabras siguiendo esta estructura:
+1. Contexto del problema (1-2 oraciones)
+2. Objetivo del estudio (1 oración)
+3. Fuente de datos y metodología (2-3 oraciones)
+4. Principales resultados (2-3 oraciones)
+5. Conclusión con implicación de política pública (1-2 oraciones)
+SIN rayas (—) ni guiones largos (–). Usa paréntesis, comas o dos puntos.
+-->
+
+[REDACTAR: Párrafo único de 200-250 palabras con los cinco elementos listados arriba.]
+
+**Palabras clave:** pobreza multidimensional; Índice de Pobreza Multidimensional; Colombia; análisis de componentes principales; política pública.
+
+---
+
+# Abstract {-}
+
+[REDACTAR: Traducción del resumen al inglés. Misma estructura y extensión.]
+
+**Keywords:** multidimensional poverty; Multidimensional Poverty Index; Colombia; principal component analysis; public policy.
+
+\newpage
+
+# Introducción
+
+<!-- REDACTAR: 600-900 palabras en total. Estructura:
+Párrafo 1 – Contextualización global y latinoamericana de la pobreza como fenómeno multidimensional.
+Párrafo 2 – La pobreza en Colombia: magnitud, tendencias recientes y disparidades regionales.
+Párrafo 3 – Justificación de actualizar el análisis: qué ha cambiado desde los datos previos.
+Párrafo 4 – Vacío de conocimiento: qué aporta ESTE estudio (datos actualizados + combinación de variables).
+Párrafo 5 – Objetivo general y objetivos específicos.
+Cita toda afirmación con su fuente. Sin rayas ni guiones largos.
+-->
+
+[REDACTAR: Párrafo 1 — Contextualización global/latinoamericana.]
+
+[REDACTAR: Párrafo 2 — Situación de Colombia: magnitud y disparidades regionales.]
+
+[REDACTAR: Párrafo 3 — Justificación de la actualización del análisis.]
+
+[REDACTAR: Párrafo 4 — Vacío de conocimiento y aporte diferencial de este estudio.]
+
+El objetivo principal de esta investigación es [COMPLETAR]. Como objetivos específicos, se busca: (a) [COMPLETAR]; (b) [COMPLETAR]; y (c) [COMPLETAR].
+
+---
+
+# Antecedentes
+
+<!-- REDACTAR: 500-800 palabras. Estructura:
+Bloque A – Marco normativo colombiano actualizado (leyes, CONPES, decretos desde 2019 a hoy).
+Bloque B – Investigaciones cuantitativas en Latinoamérica sobre pobreza multidimensional (posteriores a 2020).
+Bloque C – Investigaciones específicas sobre Colombia (posteriores a 2019).
+Orden: cronológico o de lo general a lo específico. Cita cada afirmación.
+-->
+
+## Marco normativo
+
+[REDACTAR: Leyes, decretos y documentos de política pública colombiana. Actualiza con normativa posterior a 2019.]
+
+## Investigaciones en el contexto latinoamericano
+
+[REDACTAR: Estudios cuantitativos en América Latina con IPM, PCA u otras técnicas. Prioriza 2019-2024.]
+
+## Investigaciones en Colombia
+
+[REDACTAR: Estudios específicos sobre pobreza en Colombia posteriores a 2019.]
+
+---
+
+# Metodología
+
+Este estudio es de carácter cuantitativo y puede clasificarse como descriptivo y exploratorio. Para la obtención de resultados se emplearon análisis descriptivos, pruebas de hipótesis para diferencias de proporciones y la técnica multivariante de Análisis de Componentes Principales (PCA). Todo el procesamiento estadístico se realizó en R con los paquetes tidyverse, ggplot2, FactoMineR y factoextra.
+
+## Fuente de datos y muestra
+
+Los datos analizados provienen de la base de microdatos del Índice de Pobreza Multidimensional publicada por el Departamento Administrativo Nacional de Estadística (DANE, 2025). La muestra comprende hogares que representan personas a nivel nacional. En la Tabla 1 se describe el diccionario de variables de interés, y en la Tabla 2 se presenta la distribución de hogares y personas según condición de pobreza y región.
+
+```{r tabla-variables}
+variables_df <- data.frame(
+  Notacion = c(
+    "REG", "POB", "PAR", "PIS", "ALC", "ACU", "EMF", "DLD", "BAS", "ASS",
+    "TRI", "ATI", "INE", "RES", "ANA", "LOE", "HAC", "CUA", "PER", "IPM",
+    "PRI", "SEC", "SUP", "NDE", "MEN", "ADJ", "ADT", "MAY", "HOM", "MUJ"
+  ),
+  Tipo = c(
+    "Localización", "Hogar", "Hogar", "Hogar", "Hogar", "Hogar", "Hogar", "Hogar", "Hogar", "Hogar",
+    "Hogar", "Hogar", "Hogar", "Hogar", "Hogar", "Hogar", "Hogar", "Hogar", "Hogar", "Hogar",
+    "Personas", "Personas", "Personas", "Personas", "Personas", "Personas", "Personas", "Personas", "Personas", "Personas"
+  ),
+  `Significado y Categorías` = c(
+    "Región de localización geográfica del hogar en Colombia",
+    "Condición de pobreza multidimensional del hogar (Pobre / No Pobre)",
+    "Privación por inadecuado material de paredes exteriores",
+    "Privación por inadecuado material de pisos",
+    "Privación por inadecuada eliminación de excretas",
+    "Privación por no acceso a fuente de agua mejorada",
+    "Privación por tasa de empleo formal",
+    "Privación por desempleo de larga duración",
+    "Privación por barreras de acceso a salud",
+    "Privación por no aseguramiento en salud",
+    "Privación por trabajo infantil",
+    "Privación por atención integral a la primera infancia",
+    "Privación por inasistencia escolar",
+    "Privación por rezago escolar",
+    "Privación por analfabetismo",
+    "Privación por bajo logro educativo",
+    "Privación por hacinamiento crítico",
+    "Número de cuartos en que duermen las personas del hogar",
+    "Número de personas que componen el hogar",
+    "Índice de Pobreza Multidimensional",
+    "Número de personas con máximo nivel educativo de primaria",
+    "Número de personas con máximo nivel educativo de secundaria",
+    "Número de personas con máximo nivel de educación superior",
+    "Número de personas que no declaran su formación académica",
+    "Número de personas menores de 18 años",
+    "Número de personas con edad de 18 a 29 años",
+    "Número de personas con edad de 30 a 54 años",
+    "Número de personas mayores o iguales a 55 años",
+    "Número de personas de género masculino",
+    "Número de personas de género femenino"
+  )
+)
+
+ft_vars <- flextable(variables_df) %>%
+  set_caption("Tabla 1. Diccionario de variables analizadas") %>%
+  theme_booktabs() %>%
+  autofit() %>%
+  fontsize(size = 9, part = "all") %>%
+  bold(part = "header")
+
+ft_vars
+```
+
+*Fuente: elaboración propia a partir de la base de datos IPM (DANE, 2025).*
+
+```{r tabla-muestra, eval=TRUE}
+# Cargar datos si están disponibles
+if (file.exists("datos/procesados/base_departamental.rds")) {
+  base_nac <- readRDS("datos/procesados/base_departamental.rds")
+
+  # Función para mapear a 6 regiones estándar
+  crear_6_regiones <- function(region, depto) {
+    depto <- as.numeric(unlist(depto))
+    region <- as.numeric(unlist(region))
+    case_when(
+      depto == 11 ~ 'Bogotá, D.C. (Cabecera)',
+      depto == 88 ~ 'Caribe',              # San Andrés va a Caribe
+      depto == 5  ~ 'Central',             # Antioquia va a Central
+      depto == 76 ~ 'Pacífica',            # Valle va a Pacífica
+      region == 1 ~ 'Caribe',
+      region == 2 ~ 'Oriental',
+      region == 3 ~ 'Central',
+      region == 4 ~ 'Pacífica',
+      TRUE ~ 'Amazonía - Orinoquía'
+    )
+  }
+
+  # Calcular distribución regional (Hogares)
+  hog_counts <- base_nac %>%
+    mutate(
+      pob_flat = as.numeric(unlist(POBRE)),
+      reg_flat = as.numeric(unlist(REGION)),
+      dep_flat = as.numeric(unlist(DEPARTAMENTO)),
+      REG6 = crear_6_regiones(reg_flat, dep_flat)
+    ) %>%
+    group_by(REG6, pob_flat) %>%
+    summarise(N = round(sum(as.numeric(unlist(FEX_C)), na.rm = TRUE)), .groups = 'drop') %>%
+    pivot_wider(names_from = pob_flat, values_from = N, names_prefix = 'hog_') %>%
+    mutate(hog_total = hog_0 + hog_1)
+
+  # Calcular distribución regional (Personas)
+  per_counts <- base_nac %>%
+    mutate(
+      pob_flat = as.numeric(unlist(POBRE)),
+      reg_flat = as.numeric(unlist(REGION)),
+      dep_flat = as.numeric(unlist(DEPARTAMENTO)),
+      REG6 = crear_6_regiones(reg_flat, dep_flat)
+    ) %>%
+    group_by(REG6, pob_flat) %>%
+    summarise(N = round(sum(as.numeric(unlist(FEXP)), na.rm = TRUE)), .groups = 'drop') %>%
+    pivot_wider(names_from = pob_flat, values_from = N, names_prefix = 'per_') %>%
+    mutate(per_total = per_0 + per_1)
+
+  orden_regiones <- c(
+    'Bogotá, D.C. (Cabecera)', 'Pacífica', 'Amazonía - Orinoquía', 
+    'Central', 'Oriental', 'Caribe'
+  )
+
+  tabla_2 <- hog_counts %>%
+    left_join(per_counts, by = 'REG6') %>%
+    mutate(REG6 = factor(REG6, levels = orden_regiones)) %>%
+    arrange(REG6) %>%
+    mutate(Incidencia_Pct = round((per_1 / per_total) * 100, 1))
+
+  # Calcular el verdadero Total Nacional usando la base_nacional.rds
+  base_nacional_true <- readRDS("datos/procesados/base_nacional.rds")
+
+  hog_nac <- base_nacional_true |>
+    mutate(pob_flat = as.numeric(unlist(POBRE))) |>
+    group_by(pob_flat) |>
+    summarise(N = round(sum(as.numeric(unlist(FEX_C)), na.rm = TRUE)), .groups = 'drop') |>
+    tidyr::pivot_wider(names_from = pob_flat, values_from = N, names_prefix = 'hog_') |>
+    mutate(hog_total = hog_0 + hog_1)
+
+  per_nac <- base_nacional_true |>
+    mutate(pob_flat = as.numeric(unlist(POBRE))) |>
+    group_by(pob_flat) |>
+    summarise(N = round(sum(as.numeric(unlist(FEXP)), na.rm = TRUE)), .groups = 'drop') |>
+    tidyr::pivot_wider(names_from = pob_flat, values_from = N, names_prefix = 'per_') |>
+    mutate(per_total = per_0 + per_1)
+
+  total_nac <- data.frame(
+    REG6 = 'Total nacional',
+    hog_0 = hog_nac$hog_0,
+    hog_1 = hog_nac$hog_1,
+    hog_total = hog_nac$hog_total,
+    per_0 = per_nac$per_0,
+    per_1 = per_nac$per_1,
+    per_total = per_nac$per_total,
+    Incidencia_Pct = round((per_nac$per_1 / per_nac$per_total) * 100, 1)
+  )
+
+  tabla_2 <- bind_rows(tabla_2 |> mutate(REG6 = as.character(REG6)), total_nac)
+
+  # Crear flextable profesional con spanners y formato de números de Word
+  ft_muestra <- flextable(tabla_2) %>%
+    # Cambiar etiquetas
+    set_header_labels(
+      REG6 = "Región",
+      hog_0 = "No pobre", hog_1 = "Pobre", hog_total = "Total",
+      per_0 = "No pobre", per_1 = "Pobre", per_total = "Total",
+      Incidencia_Pct = "Incidencia (%)"
+    ) %>%
+    # Fila superior de spanners
+    add_header_row(
+      values = c("Región", "Total de hogares analizados", "Personas en los hogares analizados", "Incidencia (%)"),
+      colwidths = c(1, 3, 3, 1)
+    ) %>%
+    theme_booktabs() %>%
+    fontsize(size = 8.5, part = "all") %>%
+    align(align = "center", part = "header") %>%
+    align(align = "right", j = 2:8, part = "body") %>%
+    align(align = "left", j = 1, part = "body") %>%
+    bold(part = "header") %>%
+    bold(i = nrow(tabla_2)) %>%
+    colformat_double(j = 2:7, big.mark = ".", decimal.mark = ",", digits = 0) %>%
+    colformat_double(j = 8, decimal.mark = ",", digits = 1) %>%
+    autofit()
+
+  ft_muestra
+}
+```
+
+*Fuente: elaboración propia a partir de la base de datos IPM (DANE, 2025).*
+
+## Cálculo del IPM
+
+<!-- REDACTAR: Explica brevemente la metodología Alkire-Foster que usa el DANE para calcular el IPM en Colombia. Menciona el umbral del 33%, la equiponderación de las cinco dimensiones y cómo se clasifica un hogar como pobre o no pobre. Cita DANE (2025). -->
+
+[REDACTAR: Descripción de la metodología Alkire-Foster, umbral de pobreza y dimensiones del IPM.]
+
+## Análisis de Componentes Principales (PCA)
+
+<!-- REDACTAR: Descripción concisa del PCA: reducción de dimensionalidad, obtención de componentes como combinaciones lineales de variables originales, criterio de selección de componentes. Puedes conservar ecuaciones matemáticas del artículo original. Cita Hotelling (1933) y Peña (2002). -->
+
+[REDACTAR: Conceptos de PCA, varianza explicada, criterios de retención de componentes.]
+
+## Hipótesis
+
+Las hipótesis evaluadas en este estudio son dos:
+
+**H1.** Existen diferencias estadísticamente significativas entre los niveles de pobreza de los hogares colombianos según las características sociodemográficas de las personas que los componen.
+
+**H2.** Existen diferencias estadísticamente significativas entre las condiciones de pobreza multidimensional según regiones del país.
+
+---
+
+# Resultados
+
+## Exploración descriptiva de los datos
+
+### Proporción de hogares pobres y no pobres por regiones
+
+```{r fig1-proporcion-pobreza, fig.cap="Figura 1. Porcentaje de hogares pobres y no pobres por regiones"}
+# Cargar datos si existen gráficos pregenerados
+if (file.exists("resultados/graficos_articulo/Figura_1_Pobreza_Regiones.png")) {
+  knitr::include_graphics("resultados/graficos_articulo/Figura_1_Pobreza_Regiones.png")
+}
+```
+
+<!-- REDACTAR: 1-2 párrafos interpretando la Figura 1. Menciona:
+- Qué región tiene mayor y menor porcentaje de hogares pobres
+- Si las diferencias son estadísticamente significativas (resultado de chi-cuadrado)
+- Cambios notables respecto a datos anteriores (si aplica)
+- Magnitud de las disparidades regionales
+-->
+
+[REDACTAR: Interpretación de la Figura 1. Regiones con mayor/menor pobreza, significancia estadística, cambios temporales.]
+
+### Privación por logro educativo según regiones
+
+```{r fig2-privacion-loe, fig.cap="Figura 2. Privación por logro educativo según regiones"}
+if (file.exists("resultados/graficos_articulo/Figura_2_LOE_Regiones.png")) {
+  knitr::include_graphics("resultados/graficos_articulo/Figura_2_LOE_Regiones.png")
+}
+```
+
+<!-- REDACTAR: 1-2 párrafos con atención a:
+- Regiones con mayor privación por logro educativo (LOE)
+- Porcentajes exactos de privación
+- Significancia estadística (prueba de proporción)
+- Comparación temporal si aplica
+-->
+
+[REDACTAR: Interpretación de la Figura 2. LOE por región, porcentajes, significancia, tendencias.]
+
+### Privación por condiciones de empleo formal según regiones
+
+```{r fig3-privacion-emf, fig.cap="Figura 3. Privación por condiciones de empleo formal según regiones"}
+if (file.exists("resultados/graficos_articulo/Figura_3_EMF_Regiones.png")) {
+  knitr::include_graphics("resultados/graficos_articulo/Figura_3_EMF_Regiones.png")
+}
+```
+
+<!-- REDACTAR: 1-2 párrafos con énfasis en:
+- Regiones con mayor privación de empleo formal
+- Relación con contextos de informalidad
+- Resultados de pruebas estadísticas
+- Impacto de eventos coyunturales (pandemia) si aplica
+-->
+
+[REDACTAR: Interpretación de la Figura 3. EMF por región, impacto de informalidad, resultados estadísticos.]
+
+### Personas con educación superior en el hogar según regiones
+
+```{r fig4-educacion-superior, fig.cap="Figura 4. Porcentaje de personas en el hogar con educación superior por regiones"}
+if (file.exists("resultados/graficos_articulo/Figura_4_SUP_Regiones.png")) {
+  knitr::include_graphics("resultados/graficos_articulo/Figura_4_SUP_Regiones.png")
+}
+```
+
+<!-- REDACTAR: 1-2 párrafos con atención a:
+- Distribución de educación superior en el hogar (0, 1, 2, 3+ personas)
+- Regiones con mayor/menor acceso a educación superior
+- Correlación observada con condición de pobreza
+- Disparidades regionales en acceso educativo
+-->
+
+[REDACTAR: Interpretación de la Figura 4. Distribución de SUP, regiones con mayor/menor acceso, disparidades.]
+
+## Resultados del Análisis mediante PCA
+
+### Estructura de correlaciones entre variables
+
+```{r fig5-correlaciones-hogar, fig.cap="Figura 5. Matriz de correlaciones bivariadas entre variables de hogar y el IPM"}
+if (file.exists("resultados/graficos_articulo/Figura_5_Correlacion_Hogar.png")) {
+  knitr::include_graphics("resultados/graficos_articulo/Figura_5_Correlacion_Hogar.png")
+}
+```
+
+```{r fig6-correlaciones-personas, fig.cap="Figura 6. Matriz de correlaciones bivariadas entre variables de personas y el IPM"}
+if (file.exists("resultados/graficos_articulo/Figura_6_Correlacion_Personas.png")) {
+  knitr::include_graphics("resultados/graficos_articulo/Figura_6_Correlacion_Personas.png")
+}
+```
+
+<!-- REDACTAR: 2-3 párrafos interpretando ambas matrices. Para la Figura 5:
+- Tres correlaciones más altas con IPM (especificar variables y valores r)
+- Correlaciones más bajas
+- Patrones de asociación entre variables de hogar
+Para la Figura 6:
+- Correlaciones más fuertes entre variables de personas e IPM
+- Por qué esto justifica el enfoque de incluir variables demográficas
+- Estructura de interdependencia entre características de personas
+-->
+
+[REDACTAR: Interpretación de Figuras 5 y 6. Correlaciones clave con IPM, patrones de asociación, justificación teórica.]
+
+### Porcentaje de varianza explicada por las componentes
+
+```{r fig7-pca-scree, fig.cap="Figura 7. Porcentaje de varianza explicada por componente principal"}
+if (file.exists("resultados/graficos_articulo/Figura_7_PCA_Scree.png")) {
+  knitr::include_graphics("resultados/graficos_articulo/Figura_7_PCA_Scree.png")
+}
+```
+
+<!-- REDACTAR: Indica qué porcentaje de varianza acumulada explican los primeros ejes (Dim1, Dim2, etc.). Especifica hasta qué dimensión se alcanza un porcentaje razonable (40-45%) y cuáles planos se analizarán en los biplots siguientes. -->
+
+[REDACTAR: Varianza explicada por dimensiones, criterio de retención, planos a analizar.]
+
+### Coeficientes de las componentes principales
+
+```{r tabla-coeficientes-pca}
+# Cargar tabla de coeficientes si existe archivo Excel
+if (file.exists("resultados/Tablas_Articulo_2025.xlsx")) {
+  tabla_pca <- readxl::read_excel("resultados/Tablas_Articulo_2025.xlsx", sheet = "Tabla_3_PCA")
+
+  ft_pca <- flextable(tabla_pca) %>%
+    set_caption("Tabla 3. Coeficientes de las cinco primeras componentes principales") %>%
+    theme_booktabs() %>%
+    autofit() %>%
+    fontsize(size = 8, part = "all") %>%
+    bold(part = "header")
+
+  ft_pca
+} else {
+  # Estructura vacía si no existe el archivo
+  tabla_pca_empty <- data.frame(
+    Variable = c("PAR", "PIS", "ALC", "ACU", "EMF", "DLD", "BAS", "ASS", "TRI", "ATI",
+                 "INE", "RES", "ANA", "LOE", "HAC", "CUA", "PER", "IPM",
+                 "PRI", "SEC", "SUP", "NDE", "MEN", "ADJ", "ADT", "MAY", "HOM", "MUJ"),
+    Dim.1 = rep(NA_real_, 28),
+    Dim.2 = rep(NA_real_, 28),
+    Dim.3 = rep(NA_real_, 28),
+    Dim.4 = rep(NA_real_, 28),
+    Dim.5 = rep(NA_real_, 28)
+  )
+
+  ft_pca_empty <- flextable(tabla_pca_empty) %>%
+    set_caption("Tabla 3. Coeficientes de las cinco primeras componentes principales") %>%
+    theme_booktabs() %>%
+    autofit() %>%
+    fontsize(size = 8, part = "all") %>%
+    bold(part = "header")
+
+  ft_pca_empty
+}
+```
+
+*Fuente: elaboración propia a partir de resultados en R y datos IPM (DANE, 2025).*
+
+<!-- REDACTAR: 2-3 párrafos interpretando los coeficientes. Presenta:
+- Las ecuaciones de C1 y C2 con los coeficientes reales en formato de texto o tabla
+- Las variables con mayores contribuciones a cada componente
+- Qué dimensión "representa" (pobreza material, características demográficas, educación, etc.)
+- Interpretación sustantiva: qué mide cada eje en términos de la realidad colombiana
+-->
+
+[REDACTAR: Ecuaciones de C1 y C2, contribuciones principales, interpretación de dimensiones.]
+
+### Biplot plano 1-2: hogares pobres y no pobres
+
+```{r fig8-biplot-1-2-pobreza, fig.cap="Figura 8. Plano 1-2 de componentes principales según condición de pobreza"}
+if (file.exists("resultados/graficos_articulo/Figura_8_PCA_Biplot_POB.png")) {
+  knitr::include_graphics("resultados/graficos_articulo/Figura_8_PCA_Biplot_POB.png")
+}
+```
+
+<!-- REDACTAR: 2-3 párrafos interpretando el Biplot. Describe:
+- Qué variables de privación apuntan hacia el vector IPM (ángulos pequeños con IPM)
+- Cuál es la variable que caracteriza a los hogares no pobres (SUP: educación superior)
+- Cómo se diferencia la nube de hogares pobres vs. no pobres en el plano
+- La dirección de máxima varianza (Dim1) en términos de la realidad socioeconómica
+-->
+
+[REDACTAR: Interpretación del Biplot 1-2. Vectores, direcciones, separación de grupos pobres/no pobres.]
+
+### Biplot plano 1-2: número de personas en el hogar
+
+```{r fig9-biplot-1-2-personas, fig.cap="Figura 9. Biplot plano 1-2 según número de personas en el hogar"}
+if (file.exists("resultados/graficos_articulo/Figura_9_PCA_Biplot_PER.png")) {
+  knitr::include_graphics("resultados/graficos_articulo/Figura_9_PCA_Biplot_PER.png")
+}
+```
+
+<!-- REDACTAR: 1-2 párrafos. Describe:
+- El patrón de ordenación en la primera componente: hogares grandes (muchas personas) hacia la derecha, hogares pequeños a la izquierda
+- Qué variables se asocian con cada extremo (adolescentes/jóvenes vs. adultos mayores y desempleo de larga duración)
+- Cómo el tamaño del hogar es proxy de diferencias demográficas y posiblemente económicas
+-->
+
+[REDACTAR: Patrón de ordenación por tamaño de hogar, variables asociadas, interpretación demográfica.]
+
+### Biplot plano 3-4: personas mayores en el hogar
+
+```{r fig10-biplot-3-4-mayores, fig.cap="Figura 10. Biplot plano 3-4 según personas mayores en el hogar"}
+if (file.exists("resultados/graficos_articulo/Figura_10_PCA_Biplot_MAY.png")) {
+  knitr::include_graphics("resultados/graficos_articulo/Figura_10_PCA_Biplot_MAY.png")
+}
+```
+
+<!-- REDACTAR: 1-2 párrafos. Describe:
+- Qué revela el eje 3 (Dim3) sobre la diferenciación según personas mayores
+- Qué revela el eje 4 (Dim4) sobre adultos jóvenes (ADJ), empleo formal (EMF) y aseguramiento en salud (ASS)
+- Cómo estos planos secundarios capturan patrones de envejecimiento y transiciones del ciclo de vida
+- Por qué es importante un análisis de múltiples planos en PCA
+-->
+
+[REDACTAR: Diferenciación en planos 3-4, rol del envejecimiento, empleo y salud en ciclo de vida.]
+
+---
+
+# Discusión de resultados
+
+<!-- REDACTAR: 600-900 palabras con estructura temática. Sugiero:
+
+1. Hallazgo 1 — Logro educativo como factor más determinante
+   - Contrasta con literatura reciente
+   - Mantiene la tendencia vs cambios desde estudios previos
+
+2. Hallazgo 2 — Tamaño del hogar
+   - Evidencia regional/nacional
+   - Cambios en estructuras familiares
+
+3. Hallazgo 3 — Empleo formal como determinante
+   - Impacto COVID-19 en informalidad
+   - Vulnerabilidad de ciertos grupos
+
+4. Hallazgo 4 — Persistencia regional de pobreza
+   - Disparidades ampliadas, reducidas o mantenidas
+   - Geografía económica de la pobreza en Colombia
+
+5. Cierre — Limitaciones y aporte metodológico
+   - Datos de corte transversal
+   - Ausencia de variables no incluidas en IPM
+   - Novedad de combinar variables de hogar y persona en PCA
+
+Sin rayas ni guiones largos. Cita literatura reciente.
+-->
+
+[REDACTAR: Hallazgo 1 — Logro educativo como factor más determinante de la pobreza. Contrástalo con literatura reciente.]
+
+[REDACTAR: Hallazgo 2 — Tamaño del hogar y su relación con la pobreza. Cambios en estructuras familiares.]
+
+[REDACTAR: Hallazgo 3 — Empleo formal como determinante clave. Incluye impacto de pandemia COVID-19.]
+
+[REDACTAR: Hallazgo 4 — Persistencia regional de la pobreza. Disparidades geográficas en Colombia.]
+
+[REDACTAR: Limitaciones del estudio (corte transversal, variables ausentes en IPM) y aporte metodológico.]
+
+---
+
+# Conclusiones
+
+Desde un punto de vista interpretativo, las conclusiones de este estudio se resumen en los siguientes aspectos:
+
+a) [REDACTAR: Variables sociodemográficas más determinantes que variables físicas de la vivienda.]
+
+b) [REDACTAR: Los tres factores que generan mayores diferencias entre hogares pobres y no pobres.]
+
+c) [REDACTAR: Diferencias regionales estadísticamente significativas. Regiones con mayor precariedad.]
+
+Desde un punto de vista metodológico:
+
+a) [REDACTAR: Utilidad del PCA como herramienta para análisis exploratorio de la pobreza como fenómeno multivariante.]
+
+b) [REDACTAR: Recomendación para investigaciones futuras: integración de variables de persona y hogar con georreferenciación.]
+
+En cuanto a las recomendaciones de política pública:
+
+a) [REDACTAR: Necesidad de fortalecer acceso a educación de calidad para romper ciclos de pobreza.]
+
+b) [REDACTAR: Necesidad de generar empleo formal en regiones con mayor privación.]
+
+---
+
+# Referencias
+
+<div id="refs"></div>

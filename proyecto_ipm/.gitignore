@@ -1,0 +1,37 @@
+# ==========================================
+# Gitignore Oficial - Proyecto IPM Colombia
+# Autor: Daniel José Molina Barrios
+# ==========================================
+
+# Historiales y espacios de trabajo locales de R
+.Rhistory
+.RData
+.Ruserdata
+
+# Directorios de configuración del IDE (RStudio / VSCode)
+.Rproj.user/
+.vscode/
+
+# Caché y archivos temporales de Quarto / Jupyter / Knitr
+.quarto/
+*_cache/
+*_files/
+
+# Archivos de copia de seguridad e interactivos temporales
+.Rapp.history
+*.RData
+*.Rhistory
+*.utf8.md
+*.knit.md
+
+# Archivos del sistema operativo
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+
+# Archivos temporales de Microsoft Office (Word / Excel generados)
+~$*.docx
+~$*.xlsx
+~$*.csv

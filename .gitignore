@@ -17,9 +17,9 @@ $RECYCLE.BIN/
 .DS_Store
 
 # ==========================================
-# Reglas heredadas para proyecto_ipm (Opcional - Evitar archivos generados pesados)
-# Si deseas ignorar los datasets locales de la carpeta de trabajo, descomenta las siguientes líneas:
-# /proyecto_ipm/datos/raw/*.csv
-# /proyecto_ipm/datos/procesados/*.rds
-# /proyecto_ipm/informe_ipm_portafolio.html
-# /proyecto_ipm/articulo_pobreza_multidimensional.docx
+# Reglas para proyecto_ipm (Exclusión de datos pesados y salidas binarias gigantes)
+# ==========================================
+/proyecto_ipm/datos/raw/*.csv
+/proyecto_ipm/datos/procesados/*.rds
+/proyecto_ipm/informe_ipm_portafolio.html
+/proyecto_ipm/articulo_pobreza_multidimensional.docx
