@@ -65,8 +65,9 @@ tema_articulo <- theme_minimal(base_size = 14) +
     strip.text = element_text(face = "bold", size = 12)
   )
 
-color_cyan <- "#00a0b0"
-color_yellow <- "#f3c533"
+# Paleta de marca Daniel Molina (diferenciada de los colores del artículo original)
+color_cyan   <- "#06B6D4"  # cian de marca (categoría base / "no privación")
+color_acento <- "#7C3AED"  # violeta de marca (categoría destacada / "privación")
 
 # ---------------------------------------------------------
 # FASE 2: GRÁFICOS DESCRIPTIVOS
@@ -82,7 +83,7 @@ crear_grafico_barras <- function(data_var, titulo, etiquetas_leyenda, nombre_ley
     mutate(!!sym(data_var) := forcats::fct_rev(!!sym(data_var)))
   
   # Si fct_rev, 1 está en la base (yellow) y 0 en el tope (cyan).
-  colores <- c("1" = color_yellow, "0" = color_cyan)
+  colores <- c("1" = color_acento, "0" = color_cyan)
   
   ggplot(df, aes(x = REG_label, y = prop, fill = !!sym(data_var))) +
     geom_bar(stat = "identity", position = "fill", width = 0.8) +
@@ -117,7 +118,7 @@ df_sup <- ds_art |>
   mutate(SUP_cat = as.factor(SUP_cat)) |>
   mutate(SUP_cat = forcats::fct_rev(SUP_cat))
 
-colores_sup <- c("0" = color_cyan, "1" = color_yellow, "2" = "#5cbf54", "3" = "#d3222a", "4" = "#005579", "5" = "#f572a1")
+colores_sup <- c("0" = "#9CA3AF", "1" = "#06B6D4", "2" = "#2563EB", "3" = "#7C3AED", "4" = "#10B981", "5" = "#EC4899")
 
 fig4 <- ggplot(df_sup, aes(x = REG_label, y = prop, fill = SUP_cat)) +
   geom_bar(stat = "identity", position = "fill", width = 0.8) +
@@ -145,17 +146,17 @@ mat_cor_hogar <- cor(dataset_articulo[, vars_hogar], use = "complete.obs")
 mat_cor_personas <- cor(dataset_articulo[, vars_personas], use = "complete.obs")
 
 # Definir una escala de colores suave y continua (200 colores) para la parte superior
-col_corr <- colorRampPalette(c("#A50F15", "white", "#08519C"))(200)
+col_corr <- colorRampPalette(c("#7C3AED", "white", "#06B6D4"))(200)
 
 # 5. Figura 5: Matriz de Correlación Hogar (Estilo Mixto)
 png("resultados/graficos_articulo/Figura_5_Correlacion_Hogar.png", width = 3000, height = 3000, res = 300, type = "cairo")
-corrplot.mixed(mat_cor_hogar, lower = "number", upper = "circle", tl.pos = "d", tl.col = "#d3222a", 
+corrplot.mixed(mat_cor_hogar, lower = "number", upper = "circle", tl.pos = "d", tl.col = "#111827", 
                lower.col = "black", upper.col = col_corr, number.cex = 0.75, tl.cex = 0.8)
 dev.off()
 
 # 6. Figura 6: Matriz de Correlación Personas (Estilo Mixto)
 png("resultados/graficos_articulo/Figura_6_Correlacion_Personas.png", width = 3000, height = 3000, res = 300, type = "cairo")
-corrplot.mixed(mat_cor_personas, lower = "number", upper = "circle", tl.pos = "d", tl.col = "#d3222a", 
+corrplot.mixed(mat_cor_personas, lower = "number", upper = "circle", tl.pos = "d", tl.col = "#111827", 
                lower.col = "black", upper.col = col_corr, number.cex = 0.9, tl.cex = 0.9)
 dev.off()
 
@@ -187,13 +188,13 @@ fig8 <- fviz_pca_biplot(res.pca,
                         pointsize = 1.5, 
                         col.var = "black", 
                         alpha.ind = 0.7,
-                        palette = c("#F8766D", "#00BFC4"), 
+                        palette = c("#7C3AED", "#06B6D4"),
                         repel = TRUE, 
                         legend.title = "POB",
                         title = "Figura 8. Plano 1-2 de componentes principales según hogares pobres o no") +
   theme_minimal(base_size = 14) +
   theme(
-    plot.title = element_text(face = "bold", color = "#00a0b0", size = 16, hjust = 0.5),
+    plot.title = element_text(face = "bold", color = "#2563EB", size = 16, hjust = 0.5),
     plot.background = element_rect(fill = "white", color = NA),
     legend.position = "right",
     panel.grid.major = element_line(color = "#e5e5e5"),
@@ -213,7 +214,7 @@ fig9 <- fviz_pca_biplot(res.pca,
                         title = "Figura 9. Biplot en el plano 1-2 según número de personas en el hogar") +
   theme_minimal(base_size = 14) +
   theme(
-    plot.title = element_text(face = "bold", color = "#00a0b0", size = 16, hjust = 0.5),
+    plot.title = element_text(face = "bold", color = "#2563EB", size = 16, hjust = 0.5),
     plot.background = element_rect(fill = "white", color = NA),
     legend.position = "right",
     panel.grid.major = element_line(color = "#e5e5e5"),
@@ -233,7 +234,7 @@ fig10 <- fviz_pca_biplot(res.pca,
                         title = "Figura 10. Biplot en el plano 3-4 según personas mayores en el hogar") +
   theme_minimal(base_size = 14) +
   theme(
-    plot.title = element_text(face = "bold", color = "#00a0b0", size = 16, hjust = 0.5),
+    plot.title = element_text(face = "bold", color = "#2563EB", size = 16, hjust = 0.5),
     plot.background = element_rect(fill = "white", color = NA),
     legend.position = "right",
     panel.grid.major = element_line(color = "#e5e5e5"),
