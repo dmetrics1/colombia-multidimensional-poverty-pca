@@ -73,7 +73,7 @@ source("main.R")   # pipeline completo: carga → cruce → validación → IPM 
     ├── metodologia/        Guías oficiales de construcción del IPM
     ├── reportes_dane/      Boletines DANE para validación
     ├── assets/brand/       Logo + favicons del reporte
-    └── main.R · render_articulo.R · referencias.bib
+    └── main.R · referencias.bib
 ```
 
 </details>
