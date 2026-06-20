@@ -5,12 +5,12 @@
 [![License](https://img.shields.io/github/license/dmetrics1/colombia-multidimensional-poverty-pca?style=flat-square&color=2563EB)](LICENSE)
 [![Live Report](https://img.shields.io/badge/Live%20Report-7C3AED?style=flat-square&logo=html5&logoColor=white)](https://dmetrics1.github.io/colombia-multidimensional-poverty-pca/)
 
-**Estimación del Índice de Pobreza Multidimensional (Alkire-Foster) de Colombia 2025 con microdatos DANE · lectura multivariada vía PCA · reporte interactivo en R + Quarto.**
+**Estimación del Índice de Pobreza Multidimensional (Alkire-Foster) de Colombia 2025 con microdatos DANE (ECV) · lectura multivariada vía PCA · reporte interactivo en R + Quarto.**
 
 > **📊 Reporte en vivo →** [dmetrics1.github.io/colombia-multidimensional-poverty-pca](https://dmetrics1.github.io/colombia-multidimensional-poverty-pca/)
 > *Pieza de portafolio con frontend interactivo: buscador de variables, TOC con scroll-tracking y modo claro/oscuro.*
 >
-> **🎓 Investigación:** replica y expande el artículo *"Perspectiva multidimensional de la pobreza en los hogares colombianos"*, incorporando correlaciones y Análisis de Componentes Principales (PCA).
+> **🎓 Replicación + extensión:** replica el marco metodológico de Medina-Hernández, Sierra-Ibáñez &amp; Domínguez-Monterrosa (2021) y lo **extiende** con datos actualizados (DANE ECV 2025), validación oficial y Análisis de Componentes Principales (PCA). Ver [Trabajo de referencia](#-trabajo-de-referencia).
 
 ---
 
@@ -53,7 +53,7 @@ source("main.R")          # pipeline completo: carga → cruce → validación �
 source("render_articulo.R")   # compila el artículo académico (Word)
 ```
 
-> Los microdatos del DANE (GEIH/ECV) **no se versionan** (tamaño + licencia). El pipeline los espera en `proyecto_ipm/datos/`. Detalle técnico de ejecución en [`proyecto_ipm/README.md`](proyecto_ipm/README.md).
+> Los microdatos del DANE (ECV 2025) **no se versionan** (tamaño + licencia). El pipeline los espera en `proyecto_ipm/datos/`. Detalle técnico de ejecución en [`proyecto_ipm/README.md`](proyecto_ipm/README.md).
 
 ---
 
@@ -81,10 +81,21 @@ source("render_articulo.R")   # compila el artículo académico (Word)
 
 ---
 
+## 📚 Trabajo de referencia
+
+Este proyecto **replica y extiende** el marco metodológico del artículo:
+
+> Medina-Hernández, E. J., Sierra-Ibáñez, L. F., &amp; Domínguez-Monterrosa, A. R. (2021). *Perspectiva multidimensional de la pobreza en los hogares colombianos.* **Sociedad y Economía**, (44), e10310734. https://doi.org/10.25100/sye.v0i44.10734
+
+- **De los autores originales:** el enfoque de leer la pobreza multidimensional de forma correlacional y multivariada en hogares colombianos.
+- **Aporte de este repositorio:** pipeline propio en R desde cero, **datos actualizados (DANE ECV 2025)**, validación contra boletines oficiales, **extensión con PCA** (`FactoMineR`) y reporte interactivo. Los microdatos del DANE son de libre acceso.
+
+---
+
 ## 📄 Licencia · 🙏 Créditos
 
-Distribuido bajo licencia **MIT** — úsalo libremente con atribución (ver [`LICENSE`](LICENSE)).
-**Datos:** DANE — microdatos oficiales 2025 · **Métodos:** IPM Alkire-Foster + PCA (`FactoMineR`) · **Reportería:** Quarto + R.
+Distribuido bajo licencia **MIT** — el código y la implementación son de uso libre con atribución (ver [`LICENSE`](LICENSE)). El marco conceptual pertenece a los autores citados arriba; los microdatos, al DANE.
+**Métodos:** IPM Alkire-Foster + PCA (`FactoMineR`) · **Reportería:** Quarto + R.
 
 ---
 
