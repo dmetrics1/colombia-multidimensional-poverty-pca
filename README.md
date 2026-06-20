@@ -1,71 +1,99 @@
-# Colombia Multidimensional Poverty Analysis (IPM) & PCA
+# IPM 2025 — Pobreza Multidimensional en Colombia (PCA)
 
-[![R](https://img.shields.io/badge/R-%23276DC3.svg?style=flat&logo=r&logoColor=white)](https://www.r-project.org/)
-[![Quarto](https://img.shields.io/badge/Quarto-%2347848F.svg?style=flat&logo=quarto&logoColor=white)](https://quarto.org/)
-[![Markdown](https://img.shields.io/badge/Markdown-%23000000.svg?style=flat&logo=markdown&logoColor=white)](https://daringfireball.net/projects/markdown/)
+[![R](https://img.shields.io/badge/R-4.0+-276DC3?style=flat-square&logo=r&logoColor=white)](https://www.r-project.org/)
+[![Quarto](https://img.shields.io/badge/Quarto-06B6D4?style=flat-square&logo=quarto&logoColor=white)](https://quarto.org/)
+[![License](https://img.shields.io/github/license/dmetrics1/colombia-multidimensional-poverty-pca?style=flat-square&color=2563EB)](LICENSE)
+[![Live Report](https://img.shields.io/badge/Live%20Report-7C3AED?style=flat-square&logo=html5&logoColor=white)](https://dmetrics1.github.io/colombia-multidimensional-poverty-pca/)
 
-Este repositorio contiene un pipeline analítico en **R** diseñado para estimar, auditar y analizar el **Índice de Pobreza Multidimensional (IPM)** en Colombia para el año **2025**, utilizando microdatos oficiales del **DANE**. Además, replica y expande el marco metodológico del artículo *"Perspectiva multidimensional de la pobreza en los hogares colombianos"*, incorporando análisis correlacionales y **Análisis de Componentes Principales (PCA)**.
+**Estimación del Índice de Pobreza Multidimensional (Alkire-Foster) de Colombia 2025 con microdatos DANE · lectura multivariada vía PCA · reporte interactivo en R + Quarto.**
 
----
-
-## 📂 Estructura del Workspace
-
-El proyecto está organizado de forma modular, separando el código fuente, la documentación técnica y los reportes interactivos del procesamiento masivo de datos:
-
-*   **`proyecto_ipm/`**: Carpeta principal del proyecto R/RStudio.
-    *   **`R/`**: Scripts de R estructurados y modulares para carga, cruce, validación, estimación y modelado (PCA).
-    *   **`resultados/`**: Gráficos analíticos generados (PNG) y tablas consolidadas de salida (Excel).
-    *   **`diccionario/`**: Diccionario oficial de variables DANE y su versión estructurada en Markdown.
-    *   **`metodologia/`**: Guías oficiales de construcción del IPM.
-    *   **`reportes_dane/`**: Boletines de prensa oficiales del DANE para validación de resultados.
-    *   **`main.R`**: Orquestador y punto de entrada para ejecutar todo el pipeline.
-*   **`datos/`** *(Excluido de Git)*: Microdatos masivos originales de la Gran Encuesta Integrada de Hogares (GEIH) del DANE en formatos SPSS (`.sav`) y Stata (`.dta`).
+> **📊 Reporte en vivo →** [dmetrics1.github.io/colombia-multidimensional-poverty-pca](https://dmetrics1.github.io/colombia-multidimensional-poverty-pca/)
+> *Pieza de portafolio con frontend interactivo: buscador de variables, TOC con scroll-tracking y modo claro/oscuro.*
+>
+> **🎓 Investigación:** replica y expande el artículo *"Perspectiva multidimensional de la pobreza en los hogares colombianos"*, incorporando correlaciones y Análisis de Componentes Principales (PCA).
 
 ---
 
-## 🛠️ Requisitos e Instalación
+## 🔑 Hallazgos clave
 
-Para ejecutar el pipeline localmente, abre RStudio o la consola R en la carpeta `proyecto_ipm/` y el script orquestador instalará automáticamente los paquetes faltantes.
+La pobreza multidimensional en Colombia 2025 es, sobre todo, un **fenómeno territorial**: la brecha entre la región más y la menos pobre supera los **16 puntos**.
 
-### Paquetes requeridos:
-*   **Manipulación de datos:** `tidyverse` (`dplyr`, `tidyr`, `readr`, `ggplot2`), `readxl`, `janitor`, `glue`
-*   **Diseño muestral ponderado:** `survey`, `srvyr`
-*   **Modelado y correlación:** `FactoMineR`, `factoextra`, `corrplot`, `ggcorrplot`
-*   **Tablas y reportes:** `gt`, `gtExtras`, `gtsummary`, `openxlsx`
+| Indicador | Valor |
+|---|---|
+| 🇨🇴 **Incidencia nacional (IPM)** | **9,9%** |
+| 👥 **Personas en pobreza multidimensional** | **5,22 millones** |
+| 🔺 **Región más pobre** — Amazonía-Orinoquía | **18,2%** |
+| 🔺 **Segunda** — Caribe | **17,8%** |
+| 🔻 **Menos pobre** — Bogotá | **2,2%** |
+
+**🧬 Lectura multivariada (PCA):** sobre las variables de privación social, las **dos primeras componentes principales** sintetizan la mayor parte de la varianza del fenómeno (Scree Plot + biplots), revelando cómo se agrupan las privaciones por hogar, persona y territorio — algo que los reportes estáticos oficiales no muestran.
+
+📄 *Reporte completo e interactivo en [vivo](https://dmetrics1.github.io/colombia-multidimensional-poverty-pca/).*
 
 ---
 
-## 🚀 Guía de Inicio Rápido
+## 🎯 Qué hace este proyecto
 
-### 1. Clonar el repositorio
-```bash
-git clone https://github.com/dmetrics1/colombia-multidimensional-poverty-pca.git
-cd colombia-multidimensional-poverty-pca/proyecto_ipm
-```
+Pipeline reproducible en **R** que toma los microdatos crudos del DANE y produce evidencia auditada:
 
-### 2. Ejecutar el Pipeline Completo
-Abre R y ejecuta el script principal:
+✅ Estima el **IPM 2025** (metodología oficial **Alkire-Foster**) a nivel nacional y departamental
+✅ **Valida** las estimaciones contra los boletines oficiales del DANE
+✅ Aplica **PCA** (FactoMineR) para leer la estructura multivariada de las privaciones
+✅ **Replica y expande** un artículo académico, con figuras y artículo en Word reproducible
+
+## 🛠️ Stack
+
+**R 4.0+** · `tidyverse` · diseño muestral ponderado (`survey`, `srvyr`) · PCA (`FactoMineR`, `factoextra`) · tablas (`gt`, `gtsummary`) · **Quarto** · `ggplot2`
+
+## 🚀 Reproducir
+
 ```r
-source("main.R")
+# Desde RStudio, en la carpeta proyecto_ipm/ (instala paquetes faltantes solo)
+source("main.R")          # pipeline completo: carga → cruce → validación → IPM → PCA
+source("render_articulo.R")   # compila el artículo académico (Word)
 ```
-Esto procesará las fuentes de datos, validará las estimaciones frente a las oficiales del DANE y exportará todas las tablas y gráficos a la carpeta `resultados/`.
 
-### 3. Generar el Artículo Académico (Word)
-Para compilar la última versión del documento científico con todos los gráficos embebidos dinámicamente, corre:
-```r
-source("render_articulo.R")
-```
+> Los microdatos del DANE (GEIH/ECV) **no se versionan** (tamaño + licencia). El pipeline los espera en `proyecto_ipm/datos/`. Detalle técnico de ejecución en [`proyecto_ipm/README.md`](proyecto_ipm/README.md).
 
 ---
 
-## 📊 Reportes y Documentos Disponibles
+<details>
+<summary><b>📁 Estructura del proyecto</b></summary>
 
-El proyecto cuenta con múltiples salidas de visualización:
-1.  **Versión Premium Interactiva (`proyecto_ipm/informe_ipm_portafolio_premium.html`):** Diseñada como pieza de portafolio con frontend interactivo (buscador de variables, menú TOC con scroll-tracking, switch de modo claro/oscuro y visualización split-grid vertical secuencial de gráficos).
-2.  **Reporte Estándar Quarto (`proyecto_ipm/informe_ipm_portafolio.html`):** Reporte generado dinámicamente.
-3.  **Artículo Académico (`proyecto_ipm/articulo_pobreza_multidimensional.docx`):** Documento formal formateado en estilos profesionales APA, listo para edición de contenido.
+```
+.
+├── README.md · LICENSE · index.html        # Doc, licencia, redirect a Pages
+└── proyecto_ipm/                            # Proyecto R/RStudio
+    ├── R/                  00_paquetes → 01_cargar → 02_cruce → 03_validaciones
+    │                       → 04_estimaciones → 05_analisis → 07_tablas_dane → 08_replicacion
+    ├── informe_ipm_portafolio_premium.html  # Reporte interactivo (pieza de portafolio)
+    ├── informe_ipm_portafolio.qmd           # Fuente Quarto del reporte
+    ├── articulo_pobreza_multidimensional.Rmd / .docx  # Artículo académico reproducible
+    ├── resultados/         graficos_articulo/ (Figuras 1–10) · tablas (.xlsx)
+    ├── diccionario/        Diccionario oficial DANE (Excel + Markdown)
+    ├── metodologia/        Guías oficiales de construcción del IPM
+    ├── reportes_dane/      Boletines DANE para validación
+    ├── assets/brand/       Logo + favicons del reporte
+    └── main.R · render_articulo.R · referencias.bib
+```
+
+</details>
 
 ---
 
-## 📝 Notas de Licencia y Reproducibilidad
-Los microdatos analizados son de libre acceso y propiedad exclusiva del **DANE (Departamento Administrativo Nacional de Estadística - Colombia)**. Las estimaciones y el pipeline de análisis fueron estructurados con fines académicos y de investigación.
+## 📄 Licencia · 🙏 Créditos
+
+Distribuido bajo licencia **MIT** — úsalo libremente con atribución (ver [`LICENSE`](LICENSE)).
+**Datos:** DANE — microdatos oficiales 2025 · **Métodos:** IPM Alkire-Foster + PCA (`FactoMineR`) · **Reportería:** Quarto + R.
+
+---
+
+## 👤 Autor
+
+**Daniel Molina Barrios** — Economista & Data Scientist · Santa Marta, Colombia
+
+> *"Transformo datos en soluciones, productos y decisiones."*
+
+[![GitHub](https://img.shields.io/badge/GitHub-2563EB?style=flat-square&logo=github&logoColor=white)](https://github.com/dmetrics1)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-7C3AED?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/daniel-molina-b76a4323b/)
+[![Email](https://img.shields.io/badge/Email-06B6D4?style=flat-square&logo=gmail&logoColor=white)](mailto:dm0025900@gmail.com)

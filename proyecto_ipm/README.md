@@ -7,18 +7,13 @@ El trabajo tiene dos objetivos principales:
 1. Calcular y auditar metricas del IPM 2025 a partir de bases nacional y departamental.
 2. Replicar y actualizar el enfoque del articulo "Perspectiva multidimensional de la pobreza en los hogares colombianos", incluyendo analisis descriptivo, correlaciones y Analisis de Componentes Principales (PCA).
 
-## Estado Actual
-
-Actualizado: 26 de mayo de 2026.
+## Componentes
 
 - Pipeline modular en R disponible en `R/`.
-- Bases procesadas disponibles en `datos/procesados/`.
-- Tablas finales generadas en `resultados/`.
-- 10 figuras del articulo generadas en `resultados/graficos_articulo/`.
-- Reporte HTML generado desde Quarto: `reporte_replicacion_articulo.html`.
-- Version publica para portafolio: `informe_ipm_portafolio.html`.
-- Articulo Word generado desde R Markdown/officedown: `articulo_pobreza_multidimensional.docx`.
-- Articulo fuente con 33 marcadores `[REDACTAR:]` pendientes en `articulo_pobreza_multidimensional.Rmd`.
+- Bases procesadas en `datos/procesados/`.
+- Tablas finales en `resultados/` y 10 figuras en `resultados/graficos_articulo/`.
+- Reporte interactivo de portafolio: `informe_ipm_portafolio_premium.html`.
+- Artículo académico reproducible (Word) generado desde R Markdown/officedown: `articulo_pobreza_multidimensional.docx`.
 
 ## Estructura del Proyecto
 
@@ -57,8 +52,7 @@ proyecto_ipm/
 |-- articulo_pobreza_multidimensional.Rmd
 |-- articulo_pobreza_multidimensional.docx
 |-- render_articulo.R
-|-- QUICK_START.md
-`-- ESTADO_ACTUAL_PROYECTO.md
+`-- referencias.bib
 ```
 
 ## Flujo de Ejecucion
@@ -106,9 +100,8 @@ source("R/08_replicacion_articulo.R")
 
 Para consultar los reportes navegables:
 
-- **Versión Premium (Recomendado):** Abrir [informe_ipm_portafolio_premium.html](file:///c:/Users/Estudiante/Downloads/IPM_investigacion/proyecto_ipm/informe_ipm_portafolio_premium.html), rediseñado a mano como pieza de portafolio con frontend interactivo avanzado (Modo Claro/Oscuro, Buscador de Variables, Menú TOC inteligente y scrolling continuo de gráficos).
-- **Versión Estándar:** Abrir `informe_ipm_portafolio.html` (versión generada de forma automatizada por Quarto).
-- **Reporte de Replicación:** Abrir `reporte_replicacion_articulo.html`.
+- **Versión Premium (Recomendado):** [informe_ipm_portafolio_premium.html](informe_ipm_portafolio_premium.html) — pieza de portafolio rediseñada a mano con frontend interactivo (modo claro/oscuro, buscador de variables, TOC inteligente y scroll continuo de gráficos). Publicada en vivo en [dmetrics1.github.io/colombia-multidimensional-poverty-pca](https://dmetrics1.github.io/colombia-multidimensional-poverty-pca/).
+- **Versión Estándar:** se genera con `quarto render informe_ipm_portafolio.qmd` (no se versiona por tamaño).
 
 Para compilar el articulo Word:
 
