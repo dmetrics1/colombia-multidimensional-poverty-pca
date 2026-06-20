@@ -14,6 +14,23 @@
 
 ---
 
+## 📸 Capturas del reporte
+
+<p align="center">
+  <img src="proyecto_ipm/images/portada-reporte.png" alt="Portada del reporte interactivo — IPM 2025, KPIs nacionales y regionales" width="92%" />
+</p>
+
+<table>
+  <tr>
+    <td width="50%"><img src="proyecto_ipm/resultados/graficos_articulo/Figura_8_PCA_Biplot_POB.png" alt="Biplot PCA (plano 1-2) según hogares pobres y no pobres" /></td>
+    <td width="50%"><img src="proyecto_ipm/resultados/graficos_articulo/Figura_9_PCA_Biplot_PER.png" alt="Biplot PCA (plano 1-2) según número de personas en el hogar" /></td>
+  </tr>
+</table>
+
+<sub>Biplots de Componentes Principales: la izquierda separa hogares pobres (cian) de no pobres (violeta) sobre el plano 1-2; la derecha muestra la estructura por tamaño del hogar. Gráficos con paleta de marca, generados en R (`FactoMineR` + `factoextra`).</sub>
+
+---
+
 ## 🔑 Hallazgos clave
 
 La pobreza multidimensional en Colombia 2025 es, sobre todo, un **fenómeno territorial**: la brecha entre la región más y la menos pobre supera los **16 puntos**.
