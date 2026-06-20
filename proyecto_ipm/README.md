@@ -13,7 +13,7 @@ El trabajo tiene dos objetivos principales:
 - Bases procesadas en `datos/procesados/`.
 - Tablas finales en `resultados/` y 10 figuras en `resultados/graficos_articulo/`.
 - Reporte interactivo de portafolio: `informe_ipm_portafolio_premium.html`.
-- Artículo académico reproducible (Word) generado desde R Markdown/officedown: `articulo_pobreza_multidimensional.docx`.
+- Figuras del artículo replicado generadas por `R/08_replicacion_articulo.R`.
 
 ## Estructura del Proyecto
 
@@ -45,13 +45,8 @@ proyecto_ipm/
 |   `-- Tablas_Articulo_2025.xlsx
 |
 |-- main.R
-|-- reporte_replicacion_articulo.qmd
-|-- reporte_replicacion_articulo.html
 |-- informe_ipm_portafolio.qmd
-|-- informe_ipm_portafolio.html
-|-- articulo_pobreza_multidimensional.Rmd
-|-- articulo_pobreza_multidimensional.docx
-|-- render_articulo.R
+|-- informe_ipm_portafolio_premium.html
 `-- referencias.bib
 ```
 
@@ -96,18 +91,12 @@ source("R/08_replicacion_articulo.R")
 - `resultados/graficos_articulo/Figura_9_PCA_Biplot_PER.png`
 - `resultados/graficos_articulo/Figura_10_PCA_Biplot_MAY.png`
 
-## Reportes y Articulo
+## Reportes
 
 Para consultar los reportes navegables:
 
 - **Versión Premium (Recomendado):** [informe_ipm_portafolio_premium.html](informe_ipm_portafolio_premium.html) — pieza de portafolio rediseñada a mano con frontend interactivo (modo claro/oscuro, buscador de variables, TOC inteligente y scroll continuo de gráficos). Publicada en vivo en [dmetrics1.github.io/colombia-multidimensional-poverty-pca](https://dmetrics1.github.io/colombia-multidimensional-poverty-pca/).
 - **Versión Estándar:** se genera con `quarto render informe_ipm_portafolio.qmd` (no se versiona por tamaño).
-
-Para compilar el articulo Word:
-
-```r
-source("render_articulo.R")
-```
 
 Nota: en esta maquina `Rscript` no esta disponible desde PowerShell/PATH. La ruta mas estable por ahora es ejecutar desde RStudio o desde una consola donde R este configurado.
 

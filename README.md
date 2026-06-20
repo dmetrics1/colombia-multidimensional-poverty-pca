@@ -39,7 +39,7 @@ Pipeline reproducible en **R** que toma los microdatos crudos del DANE y produce
 ✅ Estima el **IPM 2025** (metodología oficial **Alkire-Foster**) a nivel nacional y departamental
 ✅ **Valida** las estimaciones contra los boletines oficiales del DANE
 ✅ Aplica **PCA** (FactoMineR) para leer la estructura multivariada de las privaciones
-✅ **Replica y expande** un artículo académico, con figuras y artículo en Word reproducible
+✅ **Replica y extiende** el marco de un artículo académico publicado (ver abajo), con figuras propias
 
 ## 🛠️ Stack
 
@@ -49,8 +49,7 @@ Pipeline reproducible en **R** que toma los microdatos crudos del DANE y produce
 
 ```r
 # Desde RStudio, en la carpeta proyecto_ipm/ (instala paquetes faltantes solo)
-source("main.R")          # pipeline completo: carga → cruce → validación → IPM → PCA
-source("render_articulo.R")   # compila el artículo académico (Word)
+source("main.R")   # pipeline completo: carga → cruce → validación → IPM → PCA → figuras
 ```
 
 > Los microdatos del DANE (ECV 2025) **no se versionan** (tamaño + licencia). El pipeline los espera en `proyecto_ipm/datos/`. Detalle técnico de ejecución en [`proyecto_ipm/README.md`](proyecto_ipm/README.md).
@@ -68,7 +67,7 @@ source("render_articulo.R")   # compila el artículo académico (Word)
     │                       → 04_estimaciones → 05_analisis → 07_tablas_dane → 08_replicacion
     ├── informe_ipm_portafolio_premium.html  # Reporte interactivo (pieza de portafolio)
     ├── informe_ipm_portafolio.qmd           # Fuente Quarto del reporte
-    ├── articulo_pobreza_multidimensional.Rmd / .docx  # Artículo académico reproducible
+    ├── referencias.bib                       # Bibliografía (artículo replicado + DANE)
     ├── resultados/         graficos_articulo/ (Figuras 1–10) · tablas (.xlsx)
     ├── diccionario/        Diccionario oficial DANE (Excel + Markdown)
     ├── metodologia/        Guías oficiales de construcción del IPM
